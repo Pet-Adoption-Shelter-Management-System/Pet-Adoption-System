@@ -15,6 +15,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PetVaccinationId implements Serializable {
     @ManyToOne
     @JoinColumn(name = "petID", nullable = false)

@@ -2,10 +2,7 @@ package com.example.Backend.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,33 +11,16 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "adopter", indexes = {
         @Index(name = "email", columnList = "email", unique = true)
 })
-public class Adopter {
+public class Adopter extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
-
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Column(name = "first name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last name", nullable = false)
-    private String lastName;
-
-    @Column(name = "contact phone")
-    private String contactPhone;
-
-    @Column(name = "address")
-    private String address;
 
     @OneToMany(mappedBy = "adopter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

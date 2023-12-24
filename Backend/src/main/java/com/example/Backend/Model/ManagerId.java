@@ -15,6 +15,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ManagerId implements Serializable {
     @ManyToOne
     @JoinColumn(name = "employeeID", nullable = false)
