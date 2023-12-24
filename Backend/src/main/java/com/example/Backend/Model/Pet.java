@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "pet")
 public class Pet {
@@ -47,7 +48,7 @@ public class Pet {
     @Column(name = "species", nullable = false)
     private String species;
 
-    @Column(name = "isSpayed", nullable = false)
+    @Column(name = "isSpayed", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isSpayed;
 
     @ManyToOne
