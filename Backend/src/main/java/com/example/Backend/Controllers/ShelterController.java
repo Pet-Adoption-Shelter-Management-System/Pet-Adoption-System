@@ -3,7 +3,7 @@ package com.example.Backend.Controllers;
 import com.example.Backend.DTO.CreateShelterRequest;
 import com.example.Backend.DTO.EmployeeDetails;
 import com.example.Backend.DTO.UpdateShelterRequest;
-import com.example.Backend.Services.ShelterServices;
+import com.example.Backend.Services.ManagerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShelterController {
 
-    private final ShelterServices shelterServices;
+    private final ManagerService shelterServices;
 
     @PostMapping("/create")
     public ResponseEntity<String> create(@RequestBody CreateShelterRequest request) {
@@ -38,6 +38,8 @@ public class ShelterController {
             String token = extractToken(authorizationHeader);
             shelterServices.editShelter(token, request);
             return ResponseEntity.ok("Shelter updated Successfully");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         } catch (Exception e) {
@@ -50,6 +52,8 @@ public class ShelterController {
         try {
             String token = extractToken(authorizationHeader);
             return ResponseEntity.ok(shelterServices.getAllEmployees(token, shelterName));
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         } catch (ResponseStatusException e) {
             //status code will be not found in case the manager not found or the shelter not found
             //status code will be Forbidden if the employee is not a manager
