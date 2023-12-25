@@ -22,6 +22,6 @@ public class Employee extends User {
     private boolean isManager;
 
     @ManyToOne
-    @JoinColumn(name = "shelterID", nullable = false)
+    @JoinColumn(name = "shelterID")
     private Shelter shelter;
 }
