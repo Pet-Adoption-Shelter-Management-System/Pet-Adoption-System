@@ -18,13 +18,13 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "first name", nullable = false)
+    @Column(name = "first name")
     private String firstName;
 
-    @Column(name = "last name", nullable = false)
+    @Column(name = "last name")
     private String lastName;
 
     @Column(name = "contact phone")
