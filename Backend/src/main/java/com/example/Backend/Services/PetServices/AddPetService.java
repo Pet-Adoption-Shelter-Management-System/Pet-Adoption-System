@@ -36,7 +36,7 @@ public class AddPetService extends AbstractPetService {
         try {
             setPet(petDto, pet, optionalShelter.get());
             pet = petRepository.save(pet);
-//            petVaccinationRepository.deleteByPet(pet);
+            petVaccinationRepository.deleteByPet(pet);
             setVaccinations(petDto.getPetVaccinations(), pet);
             setDocs(documentService.saveDocs(docs, pet.getId()), pet);
             petRepository.save(pet);
@@ -50,6 +50,6 @@ public class AddPetService extends AbstractPetService {
 
     @Override
     public String getSuccessMessage() {
-        return "Pet added Successfully";
+        return "Pet added successfully";
     }
 }
