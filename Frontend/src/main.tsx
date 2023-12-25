@@ -8,6 +8,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Login from "./Pages/Login.tsx";
 import SignUp from "./Pages/SignUp.tsx";
 import StaffSignUP from "./Pages/StaffSignUP.tsx";
+import CreateShelter from "./Pages/CreateShelter.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,8 +27,12 @@ const router = createBrowserRouter([
     element: <StaffSignUP />
   },
   {
+    path: "/createShelter",
+    element:<CreateShelter/>
+  },
+  {
     path: "*",
-    element: <h1>404</h1>,
+    element: <h1>404 Not found</h1>,
   },
 ]);
 

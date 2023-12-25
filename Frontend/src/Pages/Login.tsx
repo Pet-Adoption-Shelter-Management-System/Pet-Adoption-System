@@ -6,17 +6,45 @@ const Login = () => {
   const navigate = useNavigate();
   const [responseStatus, setResponseStatus] = useState("");
 
-  //TODO modify the loginRequest to handle the shelter for the manager
-  //function to direct us to the login using credential handeling
-  const getLogInCredentials = (customer: LoginRequest) => {
-    handelLoginBasicCredentialsRequest(customer);
+  // ----------------------- For the adopter/staff login------------------------------------------
+  const getAdopterStaffLoginCredentials = (
+    adopterStaffLoginRequest: AdopterStaffLoginRequest
+  ) => {
+    alert("You can login !");
+    console.log(adopterStaffLoginRequest);
+    handelAdaptorStaffLoginBasicCredentialsRequest(adopterStaffLoginRequest);
   };
 
-  function handelLoginBasicCredentialsRequest(customer: LoginRequest) {
+  const handelAdaptorStaffLoginBasicCredentialsRequest = (
+    adopterStaffLoginRequest: AdopterStaffLoginRequest
+  ) => {
     //TODO
-  }
+  };
+  // -----------------------End For the adopter/staff login------------------------------------------
 
-  return <Form isLogin={true} getLogInCredentials={getLogInCredentials} />;
+  // ----------------------- For the manager login------------------------------------------
+  const getManagerLoginCredentials = (
+    managerLoginRequest: ManagerLoginRequest
+  ) => {
+    alert("You can login !");
+    console.log(managerLoginRequest);
+    handelManagerLoginBasicCredentialsRequest(managerLoginRequest);
+  };
+
+  const handelManagerLoginBasicCredentialsRequest = (
+    managerLoginRequest: ManagerLoginRequest
+  ) => {
+    //TODO
+  };
+  // -----------------------End For the adopter/staff login------------------------------------------
+
+  return (
+    <Form
+      isLogin={true}
+      getAdopterStaffLoginCredentials={getAdopterStaffLoginCredentials}
+      getManagerLoginCredentials={getManagerLoginCredentials}
+    />
+  );
 };
 
 export default Login;

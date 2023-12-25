@@ -12,7 +12,9 @@ interface Props {
 
   getSignUpCredentials?: (Customer: RegisterRequest) => void;
 
-  getLogInCredentials?: (customer: LoginRequest) => void;
+  getAdopterStaffLoginCredentials?: (adopterStaffLoginRequest: AdopterStaffLoginRequest) => void;
+
+  getManagerLoginCredentials? : (managerLoginRequest: ManagerLoginRequest) => void;
 }
 
 // This is the main component of the form
@@ -21,7 +23,8 @@ const Form = ({
   isStaff = false ?? false,
   staffEmail,
   getSignUpCredentials,
-  getLogInCredentials,
+  getAdopterStaffLoginCredentials,
+  getManagerLoginCredentials,
 }: Props) => {
   //one use state for all of the form fields (sign up or login)
   const [formData, setFormData] = useState({
@@ -45,7 +48,7 @@ const Form = ({
     !isLogin && isStaff! && staffEmail! !== ""
   );
 
-  const [whoIsLogging, setWhoisLogging] = useState("Customer / Staff");
+  const [whoIsLogging, setWhoisLogging] = useState("Adopter / Staff");
 
   const [shelterName, setShelterName] = useState("");
 
@@ -108,13 +111,23 @@ const Form = ({
     let validFields = CheckFields();
 
     if (isLogin) {
-      if (validFields.email && validFields.password && validFields.shelter) {
-        console.log("All our credentials are set for the login");
-        const customer: LoginRequest = {
-          email: formData.email,
-          password: formData.password,
-        };
-        getLogInCredentials!(customer);
+      if (whoIsLogging === "Manager") {
+        if (validFields.email && validFields.password && validFields.shelter) {
+            let managerLoginRequest:ManagerLoginRequest =  {
+              email : formData.email,
+              password : formData.password,
+              shelterName : shelterName
+            }
+            getManagerLoginCredentials!(managerLoginRequest);
+        }
+      } else {
+        if (validFields.email && validFields.password ) {
+          let adopterStaffLoginRequest:AdopterStaffLoginRequest =  {
+            email : formData.email,
+            password : formData.password,
+          }
+          getAdopterStaffLoginCredentials!(adopterStaffLoginRequest);
+        }
       }
     } else {
       if (
@@ -124,7 +137,6 @@ const Form = ({
         validFields.password &&
         validFields.confirmPassword
       ) {
-        console.log("All our credentials are set for the Signup");
         const customer: RegisterRequest = {
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -290,10 +302,12 @@ const Form = ({
   return (
     <>
       <div className="col-lg-5 col-sm-12 container form-container">
+
         <form className="row g-3" onSubmit={handleFormSubmit} noValidate>
           <header style={{ marginBottom: "0px" }}>
             <h3 style={{ marginBottom: "10px", color: "#007bff" }}>
-              {isLogin ? "Log in" : "Sign Up"}
+              {isLogin ? whoIsLogging === "Manager" ?  "Manager Log in" : "Adopter / Staff Log in" : isStaff! ? "Staff Sign Up" : "Adopter Sign Up"}
+
             </h3>
             <h6 style={{ color: "gray" }}>
               Please fill in this form in order to{" "}
@@ -321,14 +335,14 @@ const Form = ({
                   Logging in as:
                 </label>
                 <Dropdown>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                  <Dropdown.Toggle variant="primary" id="dropdown-basic">
                     {whoIsLogging}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item
-                      onClick={() => setWhoisLogging("Customer / Staff")}
+                      onClick={() => setWhoisLogging("Adopter / Staff")}
                     >
-                      Customer / Staff
+                      Adopter / Staff
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => setWhoisLogging("Manager")}>
                       Manager
@@ -476,7 +490,7 @@ const Form = ({
           <button
             type="submit"
             className="btn btn-primary col"
-            style={isStaff  || whoIsLogging === "Manager"? { marginBottom: "30px" } : { marginBottom: "0px" }}
+            style={isStaff ? { marginBottom: "30px" } : { marginBottom: "0px" }}
           >
             Continue
           </button>
@@ -493,6 +507,16 @@ const Form = ({
                 <Link to="/">Don't have an account? Sign-Up</Link>
               )}
             </>
+          )}
+          {whoIsLogging === "Manager" && (
+              <>
+                <div className="line-container">
+                <div className="line"></div>
+                <div className="or">OR</div>
+                <div className="line"></div>
+                </div>
+                <Link to="/createShelter">Want to create a shelter?</Link>
+              </>
           )}
         </form>
       </div>
