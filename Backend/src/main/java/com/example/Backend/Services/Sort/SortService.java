@@ -14,10 +14,10 @@ public class SortService <T extends Comparable<T>>{
     @Autowired
     SortApplication sortApplication;
 
-    public List<T> sortEmployee(String entity,String sortBy,boolean order,long shelterId){
+    public List<T> sortEmployee(String entity,String sortBy,boolean order,String shelterName){
         try {
             return switch (entity) {
-                case "pet" -> sortPet.sortForEmployee(sortBy, order,shelterId);
+                case "pet" -> sortPet.sortForEmployee(sortBy, order,shelterName);
 //                case "app" -> customerAdapter.convert(sortApplication.sortForEmployee(sortBy, order,shelterId));
                 default -> null;
             };

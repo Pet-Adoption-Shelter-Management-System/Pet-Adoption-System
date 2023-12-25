@@ -15,14 +15,16 @@ public class FilterPet<T extends Comparable<T>> implements IFilter {
     PetRepository petRepository;
 
     @Override
-    public List<Pet> meetCriteriaEmployee(String criteria, String toMeet, long shelterId) {
+    public List<Pet> meetCriteriaEmployee(String criteria, String toMeet, String shelterName) {
         try {
             //species, breed, age, and shelter location.
             return switch (criteria) {
-                case "species" -> petRepository.findBySpeciesNameAndShelter(toMeet, shelterId);
-                case "breed" -> petRepository.findByBreedAndShelter(toMeet, shelterId);
-                case "age" -> petRepository.findByAgeAndShelter(Float.parseFloat(toMeet), shelterId);
-                case "shelter location" -> petRepository.findByShelterLocationAndShelter(toMeet, shelterId);
+                case "species" -> petRepository.findBySpeciesAndShelter_Name(toMeet, shelterName);
+                case "breed" -> petRepository.findByBreedAndShelter_Name(toMeet, shelterName);
+                case "age" -> petRepository.findByAgeAndShelter_Name(Float.parseFloat(toMeet), shelterName);
+                case "shelter location" -> petRepository.findByShelterLocationAndShelter_Name(toMeet, shelterName);
+                case "vaccination" -> petRepository.findByPetVaccinations_VaccinationAndShelter_Name(toMeet,shelterName);
+                case "search" -> petRepository.searchPets(toMeet,shelterName);
                 default -> null;
             };
         } catch (Exception e) {
@@ -35,10 +37,12 @@ public class FilterPet<T extends Comparable<T>> implements IFilter {
         try {
             //species, breed, age, and shelter location.
             return switch (criteria) {
-                case "species" -> petRepository.findBySpeciesName(toMeet);
+                case "species" -> petRepository.findBySpecies(toMeet);
                 case "breed" -> petRepository.findByBreed(toMeet);
                 case "age" -> petRepository.findByAge(Float.parseFloat(toMeet));
                 case "shelter location" -> petRepository.findByShelterLocation(toMeet);
+                case "vaccination" -> petRepository.findByPetVaccinations_Vaccination(toMeet);
+                case "search" -> petRepository.searchPets(toMeet);
                 default -> null;
             };
         } catch (Exception e) {

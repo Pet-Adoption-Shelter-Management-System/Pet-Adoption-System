@@ -12,7 +12,7 @@ public class FilterApplication<T extends Comparable<T>> implements IFilter {
     ApplicationRepository appRepo;
 
     @Override
-    public List<Application> meetCriteriaEmployee(String criteria, String toMeet, long shelterId) {
+    public List<Application> meetCriteriaEmployee(String criteria, String toMeet, String shelterName) {
         return null;
     }
 

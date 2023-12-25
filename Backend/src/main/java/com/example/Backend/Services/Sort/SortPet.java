@@ -3,7 +3,6 @@ package com.example.Backend.Services.Sort;
 import com.example.Backend.Model.Pet;
 import com.example.Backend.Repositories.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -13,18 +12,15 @@ public class SortPet<T extends Comparable<T>> implements ISort {
 
 
     @Override//findPetsByVaccineAndShelterOrderedByNameAsc
-    public List<Pet> sortForEmployee(String sortBy, boolean order, long shelterId) {
+    public List<Pet> sortForEmployee(String sortBy, boolean order, String shelterName) {
         try {
             switch (sortBy) {
                 case "isHouseTrained":
-                    if (order) return petRepo.findPetsByHouseTrainAndShelterOrderedByNameAsc(shelterId);
-                    else return petRepo.findPetsByHouseTrainAndShelterOrderedByNameDesc(shelterId);
+                    if (order) return petRepo.findAllByOrderByIsHouseTrainedAndShelter_NameAsc(shelterName);
+                    else return petRepo.findAllByOrderByIsHouseTrainedAndShelter_NameDesc(shelterName);
                 case "isSpayed":
-                    if (order) return petRepo.findPetsByStatusAndShelterOrderedByNameAsc(shelterId);
-                    else return petRepo.findPetsByStatusAndShelterOrderedByNameDesc(shelterId);
-                case "vaccination":
-                    if (order) return petRepo.findPetsByVaccineAndShelterOrderedByNameAsc(shelterId);
-                    else return petRepo.findPetsByVaccineAndShelterOrderedByNameDesc(shelterId);
+                    if (order) return petRepo.findAllByOrderByIsSpayedAndShelter_NameAsc(shelterName);
+                    else return petRepo.findAllByOrderByIsSpayedAndShelter_NameDesc(shelterName);
                 default:
                     return null;
             }
@@ -38,14 +34,11 @@ public class SortPet<T extends Comparable<T>> implements ISort {
         try {
             switch (sortBy) { //house-training,vaccinations, or spaying/neutering status.
                 case "isHouseTrained":
-                    if (order) return petRepo.findAllByCustomer(Sort.by(Sort.Direction.ASC, "isHouseTrained"));
-                    else return petRepo.findAllByCustomer(Sort.by(Sort.Direction.DESC, "isHouseTrained"));
+                    if (order) return petRepo.findAllByOrderByIsHouseTrainedAsc();
+                    else return petRepo.findAllByOrderByIsHouseTrainedDesc();
                 case "isSpayed":
-                    if (order) return petRepo.findAllByCustomer(Sort.by(Sort.Direction.ASC, "isSpayed"));
-                    else return petRepo.findAllByCustomer(Sort.by(Sort.Direction.DESC, "isSpayed"));
-                case "vaccination":
-                    if (order) return petRepo.findByVaccinationOrderByNameAsc();
-                    else return petRepo.findByVaccinationOrderByNameDesc();
+                    if (order) return petRepo.findAllByOrderByIsSpayedAsc();
+                    else return petRepo.findAllByOrderByIsSpayedDesc();
                 default:
                     return null;
             }

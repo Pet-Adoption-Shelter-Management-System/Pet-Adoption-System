@@ -15,10 +15,10 @@ public class FilterController <T extends Comparable<T>> {
     @Autowired
     FilterService filterService;
 
-    @GetMapping("/employeeFilterEntity/{entity}/{criteria}/{toMeet}/{shelterId}")
+    @GetMapping("/employeeFilterEntity/{entity}/{criteria}/{toMeet}/{shelterName}")
     public List<T> employeeFilterEntity(@PathVariable String entity, @PathVariable String criteria,
-                                @PathVariable String toMeet, @PathVariable long shelterId){
-        return filterService.filterEmployee(entity,criteria,toMeet,shelterId);
+                                @PathVariable String toMeet, @PathVariable String shelterName){
+        return filterService.filterEmployee(entity,criteria,toMeet,shelterName);
     }
     @GetMapping("/customerFilterEntity/{entity}/{criteria}/{toMeet}")
     public List<T> customerFilterEntity(@PathVariable String entity, @PathVariable String criteria,

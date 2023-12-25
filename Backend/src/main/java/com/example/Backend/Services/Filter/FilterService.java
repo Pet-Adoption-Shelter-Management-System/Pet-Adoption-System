@@ -30,14 +30,14 @@ public class FilterService<T extends Comparable<T>> {
         }
     }
 
-    public List<T> filterEmployee(String entityName, String criteria, String toMeet, long shelterId) {
+    public List<T> filterEmployee(String entityName, String criteria, String toMeet, String shelterName) {
         try {
             System.out.println(entityName);
             System.out.println(criteria);
             System.out.println(toMeet);
             return switch (entityName) {
-                case "pet" -> filterPet.meetCriteriaEmployee(criteria, toMeet, shelterId);
-                case "app" -> filterApplication.meetCriteriaEmployee(criteria, toMeet, shelterId);
+                case "pet" -> filterPet.meetCriteriaEmployee(criteria, toMeet, shelterName);
+                case "app" -> filterApplication.meetCriteriaEmployee(criteria, toMeet, shelterName);
                 default -> null;
             };
         } catch (Exception e) {

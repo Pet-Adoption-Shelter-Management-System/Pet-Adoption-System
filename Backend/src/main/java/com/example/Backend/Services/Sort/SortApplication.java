@@ -15,7 +15,7 @@ public class SortApplication <T extends Comparable<T>> implements ISort {
     ApplicationRepository appRepo;
 
     @Override
-    public List<Application> sortForEmployee(String sortBy, boolean order, long shelterId) {
+    public List<Application> sortForEmployee(String sortBy, boolean order, String shelterName) {
         return null;
     }
 
