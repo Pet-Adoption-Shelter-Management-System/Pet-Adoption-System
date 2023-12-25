@@ -9,7 +9,7 @@ const StaffSignUP = () => {
   const [staffEmail, setStaffEmail] = useState("adelmahmoud199540@gmail.com");
   // const []
   //function to direct the flow to sign up using credentials
-  const getSignUpCredentials = (customer: RegisterRequest) => {
+  const getStaffSignUpCredentials = (customer: RegisterRequest) => {
     handleStaffSignupRequest(customer);
   };
 
@@ -20,15 +20,14 @@ const StaffSignUP = () => {
   const handleStaffSignupResponse = () => {
     //TODO
   };
-  // TODO get the email form the email parameter from the link by making a constructor
-  // TODO set the useState constant by this email and you're good to go
+
 
   return (
     <Form
       isLogin={false}
       isStaff={true}
       staffEmail={staffEmail}
-      getSignUpCredentials={getSignUpCredentials}
+      getSignUpCredentials={getStaffSignUpCredentials}
     />
   );
 };

@@ -12,6 +12,8 @@ interface Props {
 
   getSignUpCredentials?: (Customer: RegisterRequest) => void;
 
+  getStaffSignUpCredentials? : (customer: RegisterRequest) => void;
+
   getAdopterStaffLoginCredentials?: (adopterStaffLoginRequest: AdopterStaffLoginRequest) => void;
 
   getManagerLoginCredentials? : (managerLoginRequest: ManagerLoginRequest) => void;
@@ -23,6 +25,7 @@ const Form = ({
   isStaff = false ?? false,
   staffEmail,
   getSignUpCredentials,
+  getStaffSignUpCredentials,
   getAdopterStaffLoginCredentials,
   getManagerLoginCredentials,
 }: Props) => {
@@ -143,7 +146,8 @@ const Form = ({
           email: formData.email,
           password: formData.password,
         };
-        getSignUpCredentials!(customer);
+        if (isStaff!) getStaffSignUpCredentials!(customer);
+        else getSignUpCredentials!(customer);
       }
     }
   };
