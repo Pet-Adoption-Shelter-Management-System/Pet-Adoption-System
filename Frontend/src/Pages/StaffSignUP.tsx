@@ -21,13 +21,12 @@ const StaffSignUP = () => {
     //TODO
   };
 
-
   return (
     <Form
       isLogin={false}
       isStaff={true}
       staffEmail={staffEmail}
-      getSignUpCredentials={getStaffSignUpCredentials}
+      getStaffSignUpCredentials={getStaffSignUpCredentials}
     />
   );
 };
