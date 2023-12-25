@@ -35,6 +35,7 @@ public class FilterService<T extends Comparable<T>> {
             System.out.println(entityName);
             System.out.println(criteria);
             System.out.println(toMeet);
+            System.out.println(shelterName);
             return switch (entityName) {
                 case "pet" -> filterPet.meetCriteriaEmployee(criteria, toMeet, shelterName);
                 case "app" -> filterApplication.meetCriteriaEmployee(criteria, toMeet, shelterName);

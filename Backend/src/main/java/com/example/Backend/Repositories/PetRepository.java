@@ -43,10 +43,14 @@ public interface PetRepository<T extends Comparable<T>> extends JpaRepository<Pe
     //-------------------------------------------------------------------------------------------
 
     //Employee
-    List<Pet> findAllByOrderByIsHouseTrainedAndShelter_NameAsc(String shelterName);
-    List<Pet> findAllByOrderByIsHouseTrainedAndShelter_NameDesc(String shelterName);
-    List<Pet> findAllByOrderByIsSpayedAndShelter_NameAsc(String shelterName);
-    List<Pet> findAllByOrderByIsSpayedAndShelter_NameDesc(String shelterName);
+//    List<Pet> findAllByOrderByIsHouseTrainedAndShelter_NameAsc(String shelterName);
+//    List<Pet> findAllByOrderByIsHouseTrainedAndShelter_NameDesc(String shelterName);
+//    List<Pet> findAllByOrderByIsSpayedAndShelter_NameAsc(String shelterName);
+//    List<Pet> findAllByOrderByIsSpayedAndShelter_NameDesc(String shelterName);
+    List<Pet> findAllByShelter_NameOrderByIsHouseTrainedAsc(String shelterName);
+    List<Pet> findAllByShelter_NameOrderByIsHouseTrainedDesc(String shelterName);
+    List<Pet> findAllByShelter_NameOrderByIsSpayedAsc(String shelterName);
+    List<Pet> findAllByShelter_NameOrderByIsSpayedDesc(String shelterName);
     //---------------------------------------------------------------------------------------
 
     //search

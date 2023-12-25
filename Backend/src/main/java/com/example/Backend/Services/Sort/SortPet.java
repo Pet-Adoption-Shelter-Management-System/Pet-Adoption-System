@@ -3,9 +3,13 @@ package com.example.Backend.Services.Sort;
 import com.example.Backend.Model.Pet;
 import com.example.Backend.Repositories.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Service
+@Transactional
 public class SortPet<T extends Comparable<T>> implements ISort {
     @Autowired
     PetRepository petRepo;
@@ -16,11 +20,11 @@ public class SortPet<T extends Comparable<T>> implements ISort {
         try {
             switch (sortBy) {
                 case "isHouseTrained":
-                    if (order) return petRepo.findAllByOrderByIsHouseTrainedAndShelter_NameAsc(shelterName);
-                    else return petRepo.findAllByOrderByIsHouseTrainedAndShelter_NameDesc(shelterName);
+                    if (order) return petRepo.findAllByShelter_NameOrderByIsHouseTrainedAsc(shelterName);
+                    else return petRepo.findAllByShelter_NameOrderByIsHouseTrainedDesc(shelterName);
                 case "isSpayed":
-                    if (order) return petRepo.findAllByOrderByIsSpayedAndShelter_NameAsc(shelterName);
-                    else return petRepo.findAllByOrderByIsSpayedAndShelter_NameDesc(shelterName);
+                    if (order) return petRepo.findAllByShelter_NameOrderByIsSpayedAsc(shelterName);
+                    else return petRepo.findAllByShelter_NameOrderByIsSpayedDesc(shelterName);
                 default:
                     return null;
             }

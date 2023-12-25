@@ -10,11 +10,11 @@ import java.util.List;
 
 @Service
 @Transactional
-public class FilterPet<T extends Comparable<T>> implements IFilter {
+public class FilterPet<T extends Comparable<T>> {
     @Autowired
     PetRepository petRepository;
 
-    @Override
+
     public List<Pet> meetCriteriaEmployee(String criteria, String toMeet, String shelterName) {
         try {
             //species, breed, age, and shelter location.
@@ -32,7 +32,7 @@ public class FilterPet<T extends Comparable<T>> implements IFilter {
         }
     }
 
-    @Override
+
     public List<Pet> meetCriteriaCustomer(String criteria, String toMeet) {
         try {
             //species, breed, age, and shelter location.

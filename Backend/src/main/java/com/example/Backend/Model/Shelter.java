@@ -3,7 +3,6 @@ package com.example.Backend.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "shelter")
+@Table(name = "shelter", indexes = {
+        @Index(name = "name", columnList = "name", unique = true)
+})
 public class Shelter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
