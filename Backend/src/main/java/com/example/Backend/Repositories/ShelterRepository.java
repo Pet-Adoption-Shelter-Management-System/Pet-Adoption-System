@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ShelterRepository extends JpaRepository<Shelter, Long> {
     Optional<Shelter> findByName(String name);
-
+  
     @Query("SELECT new com.example.Backend.DTO.EmployeeDetails(e.email, e.firstName, e.lastName, e.contactPhone, e.address, e.isVerified) " +
             "FROM Shelter s JOIN s.employees e WHERE s.id = :shelterId")
     List<EmployeeDetails> getAllEmployees(Long shelterId);
