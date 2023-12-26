@@ -25,7 +25,7 @@ const Verification = () => {
         console.log("In request");
         try {
           const response = await fetch(
-            `http://localhost:9080/api/verification`,
+            `http://localhost:9080/api/verification/adopterVerification`,
             {
               method: "GET",
               headers: {
@@ -48,7 +48,7 @@ const Verification = () => {
             //so we notify him and we'll let him in anyway
             alert("You already exist, so you'll be logged in");
             navigate("/home", {
-              state: { userToken: userTok, from: "Signed-up" },
+              state: { userToken: userTok, from: "Signed-up", shelterName:"", role:"adopter"},
             });
           } else if (response.status == 404) {
             alert("User not found!");

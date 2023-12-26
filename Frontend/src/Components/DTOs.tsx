@@ -20,6 +20,10 @@ interface LoginRequest {
   shelterName: string;
 }
 
+interface AuthResponse {
+  token: string;
+  shelterName: string;
+}
 
 // the DTO for creating a shelter request
 interface CreateShelterRequest {
@@ -46,6 +50,3 @@ interface PetDto {
   shelterName: string;
   petVaccinations: string[];
 }
-
-
-

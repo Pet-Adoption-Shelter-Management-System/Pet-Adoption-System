@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Form from "../Components/Form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Loading from "../Components/Loading";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,9 +28,17 @@ const Login = () => {
       });
       setLoading(false);
       // Success
-      a
-      setResponseStatus(response.data);
+      alert("You've logged in successfully");
+      navigate("/home", {
+        state: {
+          userToken: response.data.token,
+          from: "logged-in",
+          shelterName: response.data.shelterName,
+          role: userLoginCredentials.role
+        },
+      });
     } catch (error) {
+      setLoading(false);
       // Handle errors here
       if (axios.isAxiosError(error)) {
         // This type assertion tells TypeScript that error is an AxiosError
@@ -37,8 +46,7 @@ const Login = () => {
         if (axiosError.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
-          alert()
-          setResponseStatus(axiosError.response.data as string);
+          alert((axiosError.response.data as AuthResponse).token);
         } else if (axiosError.request) {
           // The request was made but no response was received
           console.error("No response received:", axiosError.request);
@@ -55,6 +63,8 @@ const Login = () => {
 
   return (
     <>
+      {loading && <Loading isLoading={loading} />}
+
       <Form isLogin={true} getLoginCredentials={getLoginCredentials} />
     </>
   );
