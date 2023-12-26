@@ -12,16 +12,16 @@ interface RegisterRequest {
   password: string;
 }
 
-// The OTD for the logIn request of the adaptor / staff
-interface AdopterStaffLoginRequest {
+// The DTO for loging in
+interface LoginRequest {
   email: string;
   password: string;
+  role: string; //manager ,,, staff,,, adopter
+  shelterName: string;
 }
 
-// The OTD for the logIn request of the manager
-interface ManagerLoginRequest {
-  email: string;
-  password: string;
+interface AuthResponse {
+  token: string;
   shelterName: string;
 }
 

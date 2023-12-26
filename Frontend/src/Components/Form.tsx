@@ -12,11 +12,9 @@ interface Props {
 
   getSignUpCredentials?: (Customer: RegisterRequest) => void;
 
-  getStaffSignUpCredentials? : (customer: RegisterRequest) => void;
+  getStaffSignUpCredentials?: (customer: RegisterRequest) => void;
 
-  getAdopterStaffLoginCredentials?: (adopterStaffLoginRequest: AdopterStaffLoginRequest) => void;
-
-  getManagerLoginCredentials? : (managerLoginRequest: ManagerLoginRequest) => void;
+  getLoginCredentials?: (user: LoginRequest) => void;
 }
 
 // This is the main component of the form
@@ -26,8 +24,7 @@ const Form = ({
   staffEmail,
   getSignUpCredentials,
   getStaffSignUpCredentials,
-  getAdopterStaffLoginCredentials,
-  getManagerLoginCredentials,
+  getLoginCredentials,
 }: Props) => {
   //one use state for all of the form fields (sign up or login)
   const [formData, setFormData] = useState({
@@ -51,7 +48,7 @@ const Form = ({
     !isLogin && isStaff! && staffEmail! !== ""
   );
 
-  const [whoIsLogging, setWhoisLogging] = useState("Adopter / Staff");
+  const [whoIsLogging, setWhoisLogging] = useState("Adopter");
 
   const [shelterName, setShelterName] = useState("");
 
@@ -114,23 +111,20 @@ const Form = ({
     let validFields = CheckFields();
 
     if (isLogin) {
-      if (whoIsLogging === "Manager") {
-        if (validFields.email && validFields.password && validFields.shelter) {
-            let managerLoginRequest:ManagerLoginRequest =  {
-              email : formData.email,
-              password : formData.password,
-              shelterName : shelterName
-            }
-            getManagerLoginCredentials!(managerLoginRequest);
-        }
-      } else {
-        if (validFields.email && validFields.password ) {
-          let adopterStaffLoginRequest:AdopterStaffLoginRequest =  {
-            email : formData.email,
-            password : formData.password,
-          }
-          getAdopterStaffLoginCredentials!(adopterStaffLoginRequest);
-        }
+      if (validFields.email && validFields.password && validFields.shelter) {
+        let managerLoginRequest: LoginRequest = {
+          email: formData.email,
+          role:
+            whoIsLogging === "Manager"
+              ? "manager"
+              : whoIsLogging === "Adopter"
+              ? "adopter"
+              : "staff",
+          password: formData.password,
+          shelterName: shelterName,
+        };
+
+        getLoginCredentials!(managerLoginRequest);
       }
     } else {
       if (
@@ -306,12 +300,14 @@ const Form = ({
   return (
     <>
       <div className="col-lg-5 col-sm-12 container form-container">
-
         <form className="row g-3" onSubmit={handleFormSubmit} noValidate>
           <header style={{ marginBottom: "0px" }}>
             <h3 style={{ marginBottom: "10px", color: "#007bff" }}>
-              {isLogin ? whoIsLogging === "Manager" ?  "Manager Log in" : "Adopter / Staff Log in" : isStaff! ? "Staff Sign Up" : "Adopter Sign Up"}
-
+              {isLogin
+                ? `${whoIsLogging} Log In`
+                : isStaff!
+                ? "Staff Sign Up"
+                : "Adopter Sign Up"}
             </h3>
             <h6 style={{ color: "gray" }}>
               Please fill in this form in order to{" "}
@@ -343,10 +339,11 @@ const Form = ({
                     {whoIsLogging}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={() => setWhoisLogging("Adopter / Staff")}
-                    >
-                      Adopter / Staff
+                    <Dropdown.Item onClick={() => setWhoisLogging("Adopter")}>
+                      Adopter
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setWhoisLogging("Staff")}>
+                      Staff
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => setWhoisLogging("Manager")}>
                       Manager
@@ -498,7 +495,7 @@ const Form = ({
           >
             Continue
           </button>
-          {!isStaff! && whoIsLogging !== "Manager" &&(
+          {!isStaff! && whoIsLogging !== "Manager" && (
             <>
               <div className="line-container">
                 <div className="line"></div>
@@ -513,14 +510,14 @@ const Form = ({
             </>
           )}
           {whoIsLogging === "Manager" && (
-              <>
-                <div className="line-container">
+            <>
+              <div className="line-container">
                 <div className="line"></div>
                 <div className="or">OR</div>
                 <div className="line"></div>
-                </div>
-                <Link to="/createShelter">Want to create a shelter?</Link>
-              </>
+              </div>
+              <Link to="/createShelter">Want to create a shelter?</Link>
+            </>
           )}
         </form>
       </div>

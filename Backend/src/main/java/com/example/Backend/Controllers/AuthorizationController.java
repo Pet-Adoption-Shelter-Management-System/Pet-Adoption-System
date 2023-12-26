@@ -20,7 +20,7 @@ public class AuthorizationController {
     public ResponseEntity<String> adopterSignUp(@RequestBody RegisterRequest request) {
         try {
             authorizationService.adopterSignUp(request);
-            return ResponseEntity.ok("Signed up successfully and a verification email sent to you to complete sign up");
+            return ResponseEntity.ok("Signed up successfully and a verification email's sent to you to complete sign up");
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         } catch (Exception e) {
