@@ -95,8 +95,8 @@ public class ManagerService {
                 handleFoundEmployee(optionalEmployee.get(), request);
             else
                 handleNewEmployee(request, optionalShelter.get());
-        }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter Not Found");
+        }else
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter Not Found");
     }
 
     private void handleFoundEmployee(Employee employee, AddEmployeeRequest request) throws Exception {
@@ -110,19 +110,19 @@ public class ManagerService {
             employee.setShelter(null);
             employeeRepository.save(employee);
             newEmployeeVerification(employee);
+        }else{
+            //promote a verified staff member to be a manager
+            employee.setManager(true);
+            employee.setShelter(null);
+            employeeRepository.save(employee);
+            promotionNotification(employee);
         }
-        //promote a verified staff member to be a manager
-        employee.setManager(true);
-        employee.setShelter(null);
-        employeeRepository.save(employee);
-        promotionNotification(employee);
     }
 
     private void handleNewEmployee(AddEmployeeRequest request, Shelter shelter) throws Exception {
-        Employee employee = (Employee) Employee.builder()
-                .email(request.getEmail())
-                .isVerified(false)
-                .build();
+        Employee employee = new Employee();
+        employee.setEmail(request.getEmail());
+        employee.setVerified(false);
         employee.setManager(request.isManager());
         if(!request.isManager()){
             employee.setShelter(shelter);
@@ -172,6 +172,3 @@ public class ManagerService {
         }
     }
 }
-
-
-

@@ -35,6 +35,7 @@ public class AuthorizationService {
 
     public void adopterSignUp(RegisterRequest request) throws Exception {
         if (shelterRepository.count() > 0) {
+            System.out.println("count: " + shelterRepository.count());
             Optional<Adopter> optionalAdopter = adopterRepository.findByEmail(request.getEmail());
             Optional<Employee> optionalEmployee = employeeRepository.findByEmail(request.getEmail());
             if (optionalEmployee.isPresent())
@@ -48,22 +49,25 @@ public class AuthorizationService {
                 adopter.setLastName(request.getLastName());
                 adopter.setPassword(passwordEncoder.encode(request.getPassword()));
             } else {
-                adopter = (Adopter) Adopter.builder()
-                        .email(request.getEmail())
-                        .password(passwordEncoder.encode(request.getPassword()))
-                        .firstName(request.getFirstName())
-                        .lastName(request.getLastName())
-                        .isVerified(false)
-                        .build();
+                adopter = new Adopter();
+                adopter.setEmail(request.getEmail());
+                adopter.setPassword(passwordEncoder.encode(request.getPassword()));
+                adopter.setFirstName(request.getFirstName());
+                adopter.setLastName(request.getLastName());
+                adopter.setVerified(false);
             }
             adopterRepository.save(adopter);
+            System.out.println("before send");
             setupVerification(adopter);
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No any shelter's created yet!");
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No any shelter's created yet!");
     }
 
     public AuthResponse login(LoginRequest request) {
         try {
+            System.out.println(request);
+            System.out.println("before auth");
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(),
@@ -74,10 +78,12 @@ public class AuthorizationService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "you are unauthorized");
         }
 
+        System.out.println("auth manager is ok");
         Optional<Adopter> optionalAdopter = adopterRepository.findByEmail(request.getEmail());
         Optional<Employee> optionalEmployee = employeeRepository.findByEmail(request.getEmail());
         if (optionalAdopter.isPresent() && request.getRole().equals("adopter")) {
             Adopter adopter = optionalAdopter.get();
+            System.out.println("is verfied" + adopter.isVerified());
             if (adopter.isVerified()) {
                 var jwtToken = jwtService.generateToken(adopter);
                 return AuthResponse.builder()
@@ -86,6 +92,7 @@ public class AuthorizationService {
             }
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "you are unverified");
         }else if(optionalEmployee.isPresent()){
+            System.out.println("found in emp table");
             return employeeLogin(optionalEmployee.get(), request);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found with the specified role");
@@ -94,9 +101,11 @@ public class AuthorizationService {
     private AuthResponse employeeLogin(Employee employee, LoginRequest request){
         if(employee.isVerified()){
             if(employee.isManager() && request.getRole().equals("manager")) {
+                System.out.println("he is a manager");
                 Optional<Shelter> optionalShelter = shelterRepository.findByName(request.getShelterName());
                 if(optionalShelter.isPresent()){
                     var jwtToken = jwtService.generateToken(employee);
+                    System.out.println("shelter found");
                     return AuthResponse.builder()
                             .token(jwtToken)
                             .shelterName(optionalShelter.get().getName())
