@@ -482,7 +482,7 @@ const AddEditPet = ({
                   className="form-control"
                   name="shelterName"
                   aria-label="shelterName"
-                  placeholder="At least 8 chars"
+                  placeholder="At least 4 chars"
                   value={formData.shelterName}
                   onChange={handleInputChange}
                 />
@@ -490,9 +490,9 @@ const AddEditPet = ({
                   <div className="text-danger">*Required</div>
                 )}
                 {formSubmitted &&
-                  formData.shelterName.length < 8 &&
+                  formData.shelterName.length < 4 &&
                   formData.shelterName.length != 0 && (
-                    <div className="text-danger">*At least 8 chars</div>
+                    <div className="text-danger">*At least 4 chars</div>
                   )}
               </div>
             </div>

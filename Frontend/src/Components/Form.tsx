@@ -283,8 +283,8 @@ const Form = ({
   }
 
   function checkShelterName() {
-    if (shelterName.length < 8) {
-      return "The shelter name should have at least 8 characters";
+    if (shelterName.length < 4) {
+      return "The shelter name should have at least 4 characters";
     }
     return "";
   }
@@ -454,7 +454,7 @@ const Form = ({
                   style={{ padding: "0.8rem 0.75rem" }}
                   value={shelterName}
                   onChange={handleInputChange}
-                  placeholder="At least 8 characters"
+                  placeholder="At least 4 characters"
                   required
                 />
                 {shelterNameError && (

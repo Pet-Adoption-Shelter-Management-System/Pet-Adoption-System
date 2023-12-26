@@ -227,8 +227,8 @@ const ShelterCreationForm = ({
   }
 
   function checkShelterName() {
-    if (formData.shelterName.length < 8) {
-      return "Must be at least 8 characters";
+    if (formData.shelterName.length < 4) {
+      return "Must be at least 4 characters";
     }
     return "";
   }
@@ -331,7 +331,7 @@ const ShelterCreationForm = ({
             <label className="form-label formLabel">Shelter name</label>
             <input
               type="text"
-              placeholder="At least 8 characters"
+              placeholder="At least 4 characters"
               style={{ padding: "0.8rem 0.75rem" }}
               className={`form-control ${
                 formErrors.shelterName ? "is-invalid" : ""
