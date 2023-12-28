@@ -40,8 +40,8 @@ const Verification = () => {
             //means that the user is successfully verified
             setVerificationStatus("success");
             alert("You've successfully signed up");
-            navigate("/home", {
-              state: { userToken: userTok, from: "Signed-up" },
+            navigate("/PetsPage", {
+              state: { userToken: userTok, from: "Signed-up", shelterName: "adopter", role: "adopter" },
             });
           } else if (response.status == 400) {
             //means that the user already exists and this is a bad request
