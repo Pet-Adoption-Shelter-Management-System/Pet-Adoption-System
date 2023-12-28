@@ -65,7 +65,7 @@ const Login = () => {
     <>
       {loading && <Loading isLoading={loading} />}
 
-      <Form isLogin={true} getLoginCredentials={getLoginCredentials} />
+      <Form isLogin={true} getLoginCredentials={getLoginCredentials} isEmployeeSignup={false} />
     </>
   );
 };
