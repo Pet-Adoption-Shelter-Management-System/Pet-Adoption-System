@@ -7,8 +7,8 @@ import PetsPage from "./Pages/PetsPage";
 function App() {
   return (
     <>
-      {/* <SignUp /> */}
-      <PetsPage />
+      <SignUp />
+      {/* <PetsPage /> */}
     </>
   );
 }

@@ -311,7 +311,7 @@ const Navbar: React.FC<NavbarProps> = ({
                           transition: "color 0.3s ease",
                         }}
                       >
-                        <FontAwesomeIcon icon={faUserPlus} /> Add admin
+                        <FontAwesomeIcon icon={faUserPlus} /> Add Employee
                       </button>
                     </li>
                   )}
@@ -430,6 +430,7 @@ const Navbar: React.FC<NavbarProps> = ({
         show={showAddAdminPopup}
         handleClose={handleCloseAddAdminPopup}
         token={token}
+        shelterName={shelterName}
       />
     </div>
   );
