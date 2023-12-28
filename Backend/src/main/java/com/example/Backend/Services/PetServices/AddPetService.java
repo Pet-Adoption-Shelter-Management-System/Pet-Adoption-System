@@ -50,6 +50,6 @@ public class AddPetService extends AbstractPetService {
 
     @Override
     public String getSuccessMessage() {
-        return "Pet added Successfully";
+        return "Pet added successfully";
     }
 }
