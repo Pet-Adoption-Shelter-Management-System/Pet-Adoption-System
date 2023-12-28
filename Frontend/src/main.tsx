@@ -10,7 +10,7 @@ import SignUp from "./Pages/SignUp.tsx";
 import StaffSignUP from "./Pages/StaffSignUP.tsx";
 import CreateShelter from "./Pages/CreateShelter.tsx";
 import Verification from "./Pages/Verification.tsx";
-import Home from "./Pages/Home.tsx";
+import PetsPage from "./Pages/PetsPage.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -37,8 +37,8 @@ const router = createBrowserRouter([
     element: <Verification />,
   },
   {
-    path: "/home",
-    element: <Home />,
+    path: "/PetsPage",
+    element: <PetsPage />,
   },
   {
     path: "*",
