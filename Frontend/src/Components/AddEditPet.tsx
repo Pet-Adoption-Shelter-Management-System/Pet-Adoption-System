@@ -288,6 +288,7 @@ const AddEditPet = ({
       spayed: formData.isSpayed === "true",
       shelterName: formData.shelterName,
       petVaccinations: finalVaccines,
+      docs: [],
     };
     return petDto;
   };

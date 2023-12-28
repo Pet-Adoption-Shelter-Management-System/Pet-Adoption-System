@@ -35,6 +35,13 @@ interface CreateShelterRequest {
   contactEmail: string;
 }
 
+interface DocumentDto {
+  docName: string;
+  type: string;
+  encodedFile: ArrayBuffer;
+}
+
+
 interface PetDto {
   id: number;
   name: string;
@@ -49,4 +56,11 @@ interface PetDto {
   spayed: boolean;
   shelterName: string;
   petVaccinations: string[];
+  docs:DocumentDto[]
 }
+
+
+// interface Pet {
+//   petDto:PetDto;
+//   imageLink:string;
+// }

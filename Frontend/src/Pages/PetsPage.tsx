@@ -1,32 +1,78 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useLocation } from "react-router";
 import Navbar from "../Components/Navbar";
+import axios from "axios";
+import PetsList from "../Components/PetsList";
 
-interface PetsInfo {
+interface UserInfo {
   firstName: string;
   lastName: string;
-  Pets: [];
 }
 
 const PetsPage = () => {
   const location = useLocation();
   var { userToken, from, shelterName, role } = location.state || {};
-  const [petsInfo, setPetsInfo] = useState<PetsInfo | null>(null);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const isMounted = useRef<boolean>(true);
+
+  const fetchUserInfo = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:9080/api/petPage/getUserInfo?role=${role}&shelterName=${shelterName}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setUserInfo(response.data);
+    } catch (error) {
+      console.error("Access denied !");
+    }
+  };
+
+  // useEffect runs on component mount
+  useEffect(() => {
+    if (isMounted.current) {
+      fetchUserInfo();
+      isMounted.current = false;
+    }
+  }, []);
+
+  const getPets = async() => {
+    let response : PetDto[] = []
+    return response
+    // TODO
+  };
+
+  const getShelterPets = async() => {
+    let response : PetDto[] = []
+    return response
+    // TODO
+  }
+
   return (
-    <div style={{ overflowX: "hidden" }}>
-      <div className="home-navbar-container" style={{ height: "100vh" }}>
-        <Navbar
-          shelterName={ role === "adopter" ? "Pets Adoption" : shelterName}
-          firstName={petsInfo?.firstName || "Mahmoud"}
-          lastName={petsInfo?.lastName || "Attia"}
-          role={role}
-          token={userToken}
-          isPets={true}
-        />
-      </div>
-    </div>
+    <>
+      <Navbar
+        shelterName={role === "adopter" ? "Pets Adoption" : shelterName}
+        firstName={userInfo?.firstName || "Mahmoud"}
+        lastName={userInfo?.lastName || "Attia"}
+        role={role}
+        token={userToken}
+        isPets={true}
+      />
+
+      <PetsList
+        firstName={userInfo?.firstName || "Mahmoud"}
+        lastName={userInfo?.lastName || "Attia"}
+        userToken={userToken}
+        role={role}
+        getPets={role === "adopter" ? getPets : getShelterPets}
+        passedPets={[]} // TODO
+      />
+    </>
   );
 };
 
