@@ -25,4 +25,5 @@ public class PetDto {
     private Boolean spayed;
     private String shelterName;
     private List<String> petVaccinations;
+    private List<DocumentDto> docs;
 }
