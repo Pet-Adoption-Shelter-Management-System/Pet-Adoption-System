@@ -1,5 +1,6 @@
 package com.example.Backend.Controllers;
 
+import com.example.Backend.DTO.AppManageDto;
 import com.example.Backend.Middleware.Permissions;
 import com.example.Backend.Services.ApplicationService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,28 @@ public class ApplicationController {
                 }
                 appService.submitApp(token, petId, shelterId);
                 return ResponseEntity.status(HttpStatus.OK).body("Application submitted Successfully");
+            } catch (ResponseStatusException e) {
+                return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden access");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+    }
+
+    @PostMapping("/manage")
+    public ResponseEntity<String> manageApp(
+            @RequestBody AppManageDto appManageDto,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+    ) {
+        if (permissions.checkToken(authorizationHeader)) {
+            try {
+                String token = permissions.extractToken(authorizationHeader);
+                if (!permissions.checkStaff(token)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+                }
+                appService.manageApp(appManageDto.getAppId(), appManageDto.getStatus());
+                return ResponseEntity.status(HttpStatus.OK).body("Application managed Successfully");
             } catch (ResponseStatusException e) {
                 return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
             } catch (Exception e) {
