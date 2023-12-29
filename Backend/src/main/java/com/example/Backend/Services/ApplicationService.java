@@ -1,11 +1,12 @@
 package com.example.Backend.Services;
 
 import com.example.Backend.Model.Application;
-import com.example.Backend.Repositories.ShelterRepository;
+import com.example.Backend.Model.Pet;
+import com.example.Backend.Model.Shelter;
 import com.example.Backend.Repositories.AdopterRepository;
-import com.example.Backend.Repositories.PetRepository;
-import com.example.Backend.DTO.ApplicationDetails;
 import com.example.Backend.Repositories.ApplicationRepository;
+import com.example.Backend.Repositories.PetRepository;
+import com.example.Backend.Repositories.ShelterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,20 +26,22 @@ public class ApplicationService {
     private final ShelterRepository shelterRepo;
     private final ApplicationRepository applicationRepo;
 
-    public void submitApp(ApplicationDetails applicationDetails){
-        Optional<Application> optionalApp = applicationRepo.findById(applicationDetails.getId());
-        if(optionalApp.isEmpty()){
-            Application application = Application.builder()
-                    .id(applicationDetails.getId())
-                    .date(applicationDetails.getDateTime())
-                    .status(applicationDetails.getStatus())
-                    .adopter(adopterRepo.findById(applicationDetails.getAdopterID()).get())
-                    .shelter(shelterRepo.findById(applicationDetails.getShelterID()).get())
-                    .pet(petRepo.findById(applicationDetails.getPetID()).get())
-                    .build();
-            applicationRepo.save(application);
-        }else {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Application already exists");
+    public void submitApp(String token, long petId, long shelterId) {
+        Optional<Pet> optionalPet = petRepo.findById(petId);
+        if (optionalPet.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pet not found");
         }
+        Optional<Shelter> optionalShelter = shelterRepo.findById(shelterId);
+        if (optionalShelter.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter not found");
+        }
+        Application application = Application.builder()
+                .adopter(adopterRepo.findByEmail(token).get())
+                .shelter(optionalShelter.get())
+                .pet(optionalPet.get())
+                .status("Pending")
+                .date(java.time.LocalDateTime.now())
+                .build();
+        applicationRepo.save(application);
     }
 }

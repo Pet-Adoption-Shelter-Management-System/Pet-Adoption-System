@@ -22,4 +22,8 @@ public class Permissions {
         return authorizationHeader != null &&
                 authorizationHeader.startsWith("Bearer ") && authorizationHeader.length() > 7;
     }
+
+    public String extractToken(String authorizationHeader) {
+        return authorizationHeader.substring(7);
+    }
 }
