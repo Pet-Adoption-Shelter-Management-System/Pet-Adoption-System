@@ -112,7 +112,7 @@ const SignUp = () => {
         )}
       {loading && <Loading isLoading={loading} />}
 
-      <Form isLogin={false} getSignUpCredentials={getSignUpCredentials} />
+      <Form isLogin={false} getSignUpCredentials={getSignUpCredentials} isEmployeeSignup={false}  />
     </>
   );
 };

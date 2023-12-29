@@ -10,21 +10,31 @@ interface AddAdminPopupProps {
   show: boolean;
   handleClose: () => void;
   token: string;
+  shelterName: string;
 }
 
-interface addAdminRequest {
-  newAdminEmail: string;
+interface addEmployeeRequest {
+  email: string;
+  manager: boolean;
+  shelterName: string;
 }
 
 const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
   show,
   handleClose,
   token,
+  shelterName,
 }) => {
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [responseData, setResponseData] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isManager, setIsManager] = useState(false); // New state for role selection
+
+  const handleRoleChange = (event: ChangeEvent<{ value: string }>) => {
+    setIsManager(event.target.value === 'manager');
+  };
+  
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newEmail = event.target.value;
@@ -41,11 +51,17 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
     event.preventDefault();
     setLoading(true);
     setEmail("");
+    setIsManager(false);
     setIsValidEmail(true);
+
     handleClose();
     try {
-      let request: addAdminRequest = { newAdminEmail: email };
-      let url: string = "http://localhost:9080/api/admin/addAdmin";
+      let request: addEmployeeRequest = {
+        email: email,
+        manager: isManager,
+        shelterName: shelterName,
+      };
+      let url: string = "http://localhost:9080/api/employee/addEmployee";
       const response = await axios.post(url, request, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -85,6 +101,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
     // Reset form state
     setEmail("");
     setIsValidEmail(true);
+    setIsManager(false);
 
     // Close the modal
     handleClose();
@@ -98,7 +115,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
       {loading && <Loading isLoading={loading} />}
       <Modal show={show} onHide={handleModalClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Add Admin</Modal.Title>
+          <Modal.Title>Add Employee</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -118,6 +135,14 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
                 Please enter a valid email address.
               </Form.Control.Feedback>
             </Form.Group>
+            {/* New dropdown for role selection */}
+            <Form.Group controlId="formRole">
+              <Form.Label>Role</Form.Label>
+              <Form.Control as="select" onChange={handleRoleChange}>
+                <option value="staff">Staff</option>
+                <option value="manager">Manager</option>
+              </Form.Control>
+            </Form.Group>
             <div className="text-center">
               <Button
                 variant="primary"
@@ -133,7 +158,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
       </Modal>
       <>
         {responseData ===
-          "Admin has been added and a Verification Email sent to him" && (
+          "Employee has been added and Email sent" && (
           <GenericAlertModal
             onClose={handleModalClose}
             resetResponseData={resetResponseData}
@@ -157,7 +182,7 @@ const AddAdminPopup: React.FC<AddAdminPopupProps> = ({
         )}
         {responseData !== "" &&
           responseData !==
-            "Admin has been added and a Verification Email sent to him" && (
+            "Employee has been added and Email sent" && (
             <GenericAlertModal
               onClose={handleModalClose}
               resetResponseData={resetResponseData}

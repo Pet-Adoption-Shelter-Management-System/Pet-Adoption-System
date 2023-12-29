@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeDetails implements Serializable {
+public class EmployeeDetails {
     String email;
     String firstName;
     String lastName;

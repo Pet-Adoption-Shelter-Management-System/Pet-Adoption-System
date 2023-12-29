@@ -6,7 +6,7 @@ import { Dropdown } from "react-bootstrap";
 interface Props {
   isLogin: boolean;
 
-  isStaff?: boolean;
+  isEmployeeSignup: boolean;
 
   staffEmail?: string;
 
@@ -20,7 +20,7 @@ interface Props {
 // This is the main component of the form
 const Form = ({
   isLogin,
-  isStaff = false ?? false,
+  isEmployeeSignup,
   staffEmail,
   getSignUpCredentials,
   getStaffSignUpCredentials,
@@ -30,7 +30,7 @@ const Form = ({
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: !isLogin && isStaff! && staffEmail! !== "" ? staffEmail! : "",
+    email: !isLogin && isEmployeeSignup ? staffEmail! : "",
     password: "",
     confirmPassword: "",
   });
@@ -45,7 +45,7 @@ const Form = ({
   });
 
   const [isEmailDisabled, setIsEmailDisabled] = useState(
-    !isLogin && isStaff! && staffEmail! !== ""
+    !isLogin && isEmployeeSignup
   );
 
   const [whoIsLogging, setWhoisLogging] = useState("Adopter");
@@ -140,7 +140,7 @@ const Form = ({
           email: formData.email,
           password: formData.password,
         };
-        if (isStaff!) getStaffSignUpCredentials!(customer);
+        if (isEmployeeSignup) getStaffSignUpCredentials!(customer);
         else getSignUpCredentials!(customer);
       }
     }
@@ -305,8 +305,8 @@ const Form = ({
             <h3 style={{ marginBottom: "10px", color: "#007bff" }}>
               {isLogin
                 ? `${whoIsLogging} Log In`
-                : isStaff!
-                ? "Staff Sign Up"
+                : isEmployeeSignup
+                ? "Employee Sign Up"
                 : "Adopter Sign Up"}
             </h3>
             <h6 style={{ color: "gray" }}>
@@ -491,11 +491,11 @@ const Form = ({
           <button
             type="submit"
             className="btn btn-primary col"
-            style={isStaff ? { marginBottom: "30px" } : { marginBottom: "0px" }}
+            style={isEmployeeSignup ? { marginBottom: "30px" } : { marginBottom: "0px" }}
           >
             Continue
           </button>
-          {!isStaff! && whoIsLogging !== "Manager" && (
+          {!isEmployeeSignup && whoIsLogging !== "Manager" && (
             <>
               <div className="line-container">
                 <div className="line"></div>

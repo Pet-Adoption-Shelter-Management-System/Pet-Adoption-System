@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for {@link Shelter}
- */
+
 @Data
 @Builder
 @AllArgsConstructor
