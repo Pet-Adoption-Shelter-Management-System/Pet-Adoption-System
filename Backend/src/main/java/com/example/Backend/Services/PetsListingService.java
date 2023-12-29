@@ -4,7 +4,6 @@ import com.example.Backend.DTO.DocumentDto;
 import com.example.Backend.DTO.PetDto;
 import com.example.Backend.Model.Document;
 import com.example.Backend.Model.Pet;
-import com.example.Backend.Model.PetVaccination;
 import com.example.Backend.Repositories.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,31 +24,13 @@ public class PetsListingService {
     public List<PetDto> getAllPets() {
         return petRepository.findAll().stream().map(pet -> {
             try {
-                return PetDto.builder()
-                        .id(pet.getId())
-                        .name(pet.getName())
-                        .male(pet.isMale())
-                        .houseTrained(pet.isHouseTrained())
-                        .description(pet.getDescription())
-                        .healthStatus(pet.getHealthStatus())
-                        .age(pet.getAge())
-                        .behaviour(pet.getBehaviour())
-                        .breed(pet.getBreed())
-                        .species(pet.getSpecies())
-                        .spayed(pet.getIsSpayed())
-                        .shelterName(pet.getShelter().getName())
-                        .petVaccinations(getPetVaccinations(pet))
-                        .docs(getPetDocs(pet))
-                        .build();
+                PetDto dto = pet.toDto();
+                dto.setDocs(getPetDocs(pet));
+                return dto;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }).collect(Collectors.toList());
-    }
-
-    List<String> getPetVaccinations(Pet pet) {
-        return pet.getPetVaccinations().stream()
-                .map(PetVaccination::getVaccination).collect(Collectors.toList());
     }
 
     List<DocumentDto> getPetDocs(Pet pet) throws IOException {
@@ -63,7 +43,7 @@ public class PetsListingService {
                 DocumentDto dto = DocumentDto.builder()
                         .docName(path.getFileName().toString())
                         .type(doc.getType())
-                        .encodedFile(Base64.getEncoder().encodeToString(Files.readAllBytes(path)).getBytes())
+                        .encodedFile(Files.readAllBytes(path))
                         .build();
                 return List.of(dto);
             }

@@ -1,11 +1,13 @@
 package com.example.Backend.Model;
 
+import com.example.Backend.DTO.PetDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @NoArgsConstructor
@@ -62,4 +64,26 @@ public class Pet {
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Document> documents = new ArrayList<>();
+
+    public PetDto toDto() {
+        return PetDto.builder()
+                .id(this.getId())
+                .name(this.getName())
+                .male(this.isMale())
+                .houseTrained(this.isHouseTrained())
+                .description(this.getDescription())
+                .healthStatus(this.getHealthStatus())
+                .age(this.getAge())
+                .behaviour(this.getBehaviour())
+                .breed(this.getBreed())
+                .species(this.getSpecies())
+                .spayed(this.getIsSpayed())
+                .shelterName(this.getShelter().getName())
+                .petVaccinations(this.getVaccinations())
+                .build();
+    }
+    public List<String> getVaccinations() {
+        return this.getPetVaccinations().stream()
+                .map(PetVaccination::getVaccination).collect(Collectors.toList());
+    }
 }
