@@ -4,7 +4,14 @@ import { useNavigate } from "react-router-dom";
 import "./PetsList.css";
 import Pagination from "./Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faSort } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleCheck,
+  faFilter,
+  faSort,
+} from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import BobUpWindow from "./BobUpWindow";
+import GenericAlertModal from "./GenericAlertModal";
 
 interface Props {
   passedPets: PetDto[];
@@ -28,6 +35,9 @@ const PetsList = ({
   passedPets,
 }: Props) => {
   const [pets, setPets] = useState<PetDto[]>([]);
+
+  // Application response
+  const [applicationResponse, setApplicationResponse] = useState("");
 
   // Pageination
   const [currentPage, setCurrentPage] = useState(1);
@@ -62,21 +72,60 @@ const PetsList = ({
   const isMounted = useRef(true);
   const navigate = useNavigate();
 
-  const fetchData = async () => {
-    const petss = await getPets();
-    console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
-    setPets(petss);
-    console.log("Pets: ", pets);
-  };
+  // const fetchData = async () => {
+  //   const petss = await getPets();
+  //   console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
+  //   setPets(petss);
+  //   console.log("Pets: ", pets);
+  // };
 
   // Get the pets once the component is mounted
   useEffect(() => {
-    if (isMounted.current) {
-      if (passedPets.length > 0) setPets(passedPets);
-      else fetchData();
-      isMounted.current = false;
-    }
-  }, []);
+    
+    const fetchData = async () => {
+      const petss = await getPets();
+      console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
+      setPets(petss);
+      console.log("Pets: ", pets);
+    };
+
+    const fetchSearchedData = async () => {
+      // Set wishlist status
+      for (let i = 0; i < passedPets.length; i++) {
+        const pet = passedPets[i];
+        // if (product.inWishlist) {
+        //   setWishlistStatus((prevStatus) =>
+        //     new Map(prevStatus).set(product.id, true)
+        //   );
+        // } else {
+        //   setWishlistStatus((prevStatus) =>
+        //     new Map(prevStatus).set(product.id, false)
+        //   );
+        // }
+      }
+
+      // Load images
+      const updatedProducts = await Promise.all(
+        passedPets.map(async (pet) => {
+          try {
+            pet.age = pet.age + 5;
+            pet.age = pet.age - 5;
+            return { ...pet, age: pet.age };
+          } catch (error) {
+            console.error("Error loading image:", error);
+            return pet; // Return original product if image loading fails
+          }
+        })
+      );
+
+      setPets(updatedProducts);
+    };
+
+    console.log(passedPets);
+    if (passedPets) {
+      fetchSearchedData();
+    } else fetchData();
+  }, [passedPets, getPets]);
 
   // Get current pets
   const indexOfLastPet = currentPage * petsPerPage;
@@ -93,28 +142,8 @@ const PetsList = ({
     }, 300);
   };
 
-  // TODO go to the PetDetails
   const handlePetClicked = (pet: PetDto) => {
     const id = pet.id;
-    console.log("RORUUUUUUUUUUUUUUUTTTTTTTTTTTTTTT")
-    console.log(
-      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ shelterName:",
-      shelterName
-    );
-    console.log(
-      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ userToken:",
-      userToken
-    );
-    console.log("🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ id:", id);
-    console.log("🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ role:", role);
-    console.log(
-      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ lastName:",
-      lastName
-    );
-    console.log(
-      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ firstName:",
-      firstName
-    );
     navigate("/petDetails", {
       state: {
         firstName: firstName,
@@ -231,12 +260,91 @@ const PetsList = ({
     setEditPet(false);
   };
 
-  const handleAppliyClicled = (pet: PetDto) => {
-    //TODO
+  const handleAppliyClicled = async (pet: PetDto) => {
+    try {
+      let application: ApplicationRequestDto = {
+        petID: pet.id,
+        shelterID: pet.shelter.id,
+      };
+      let url: string = `http://localhost:9080/api/application/create`;
+      const response = await axios.post(url, application, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      // Here means that the response is Ok and the product is added successfully
+      setApplicationResponse(response.data);
+    } catch (error) {
+      // Handle errors here
+      if (axios.isAxiosError(error)) {
+        // This type assertion tells TypeScript that error is an AxiosError
+        const axiosError = error as import("axios").AxiosError;
+        if (axiosError.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error("Response data:", axiosError.response.data);
+          console.error("Response status:", axiosError.response.status);
+          setApplicationResponse(axiosError.response.data as string);
+        } else if (axiosError.request) {
+          // The request was made but no response was received
+          console.error("No response received:", axiosError.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error("Error:", axiosError.message);
+        }
+      } else {
+        // Handle non-Axios errors
+        console.error("Non-Axios error:", error);
+      }
+    }
+  };
+
+  const resetApplicationResponse = () => {
+    setApplicationResponse("");
   };
 
   return (
     <div>
+      {applicationResponse === "Application submitted Successfully" && (
+        <>
+          <GenericAlertModal
+            show={true}
+            onClose={resetApplicationResponse}
+            resetResponseData={resetApplicationResponse}
+            body={
+              <>
+                <p>
+                  <FontAwesomeIcon
+                    icon={faCircleCheck}
+                    style={{
+                      color: "green",
+                      fontSize: "18px",
+                      marginRight: "10px",
+                    }}
+                  />
+                  {applicationResponse}
+                </p>
+              </>
+            }
+          ></GenericAlertModal>
+        </>
+      )}
+      {applicationResponse !== "Application submitted Successfully" &&
+        applicationResponse !== "" && (
+          <>
+            <GenericAlertModal
+              show={true}
+              onClose={resetApplicationResponse}
+              resetResponseData={resetApplicationResponse}
+              body={
+                <>
+                  <p style={{ color: "red" }}>{applicationResponse}</p>
+                </>
+              }
+            ></GenericAlertModal>
+          </>
+        )}
       {editPet && (
         <>
           <AddEditPet

@@ -1,5 +1,6 @@
 package com.example.Backend.Services;
 
+import com.example.Backend.Middleware.Utils;
 import com.example.Backend.Model.Application;
 import com.example.Backend.Model.Pet;
 import com.example.Backend.Model.Shelter;
@@ -24,6 +25,7 @@ public class ApplicationService {
     private final AdopterRepository adopterRepo;
     private final PetRepository petRepo;
     private final ShelterRepository shelterRepo;
+    private final Utils utils;
     private final ApplicationRepository applicationRepo;
 
     public void submitApp(String token, long petId, long shelterId) {
@@ -35,8 +37,17 @@ public class ApplicationService {
         if (optionalShelter.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter not found");
         }
+//         Then search if there's already an application for this pet
+        Optional<Application> optionalApplication = applicationRepo.findByPet_Id(petId);
+        if(optionalApplication.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There exist already an " +
+                    "application for this pet");
+        }
+        Pet pet = optionalPet.get();
+        pet.setAvailable(false);
+        petRepo.save(pet);
         Application application = Application.builder()
-                .adopter(adopterRepo.findByEmail(token).get())
+                .adopter(utils.getAdopter(token))
                 .shelter(optionalShelter.get())
                 .pet(optionalPet.get())
                 .status("Pending")

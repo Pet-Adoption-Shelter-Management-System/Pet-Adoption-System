@@ -1,6 +1,7 @@
 package com.example.Backend.Controllers;
 
 import com.example.Backend.DTO.AppManageDto;
+import com.example.Backend.DTO.ApplicationRequestDto;
 import com.example.Backend.Middleware.Permissions;
 import com.example.Backend.Services.ApplicationService;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +22,17 @@ public class ApplicationController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createApp(
-            @RequestParam long petId,
-            @RequestParam long shelterId,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
-    ) {
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @RequestBody ApplicationRequestDto applicationRequestDto
+            ) {
+        System.out.println(applicationRequestDto);
         if (permissions.checkToken(authorizationHeader)) {
             try {
                 String token = permissions.extractToken(authorizationHeader);
                 if (!permissions.checkAdopter(token)) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
                 }
-                appService.submitApp(token, petId, shelterId);
+                appService.submitApp(token, applicationRequestDto.getPetID(), applicationRequestDto.getShelterID());
                 return ResponseEntity.status(HttpStatus.OK).body("Application submitted Successfully");
             } catch (ResponseStatusException e) {
                 return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
