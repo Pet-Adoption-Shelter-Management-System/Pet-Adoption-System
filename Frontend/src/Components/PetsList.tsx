@@ -3,6 +3,8 @@ import AddEditPet, { EditedPet } from "./AddEditPet";
 import { useNavigate } from "react-router-dom";
 import "./PetsList.css";
 import Pagination from "./Pagination";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilter, faSort } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   passedPets: PetDto[];
@@ -38,7 +40,13 @@ const PetsList = ({
 
   // Sort and Filter
   const [sortParams, setSortParams] = useState({ sortBy: "", sortOrder: true });
+  const [filterParams, setFilterParams] = useState({
+    filterBy: "",
+    filterCriteria: "",
+  });
+
   const [showSortModal, setShowSortModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
   // const [filter, setFilter] = useState<FilterProductDto>({ //TODO
   //   productName: '',
   //   fromPrice: 0,
@@ -87,20 +95,23 @@ const PetsList = ({
 
   // TODO go to the PetDetails
   const handlePetClicked = (pet: PetDto) => {
-    //   const id = product.id;
-    //   navigate("/product-details", {
-    //     state: {
-    //       firstName: firstName,
-    //       lastName: lastName,
-    //       isAdmin: isAdmin,
-    //       productID: id,
-    //       token: userToken,
-    //     },
-    //   });
+      const id = pet.id;
+      navigate("/petDetails", {
+        state: {
+          firstName: firstName,
+          lastName: lastName,
+          role:role,
+          petID: id,
+          token: userToken,
+          shelterName: shelterName
+        },
+      });
   };
 
   //TODO sorting
   const handleSortButtonClick = async () => {
+    console.log(sortParams);
+
     //     const products = await getSortedProducts(sortParams.sortBy, sortParams.sortOrder);
     //     // Set wishlist status
     //     for (let i = 0; i < products.length; i++) {
@@ -114,9 +125,7 @@ const PetsList = ({
     //           new Map(prevStatus).set(product.id, false)
     //         );
     //       }
-  };
-
-  //     // Load images
+  
   //     const updatedProducts = await Promise.all(
   //       products.map(async (product) => {
   //         try {
@@ -132,53 +141,52 @@ const PetsList = ({
   //     );
   //     setProducts(updatedProducts);
   //   };
+  }
+
+  
+  //TODO filtering
+  const handleFilterButtonClick = async () => {
+    console.log(filterParams);
+    //     const products = await getSortedProducts(sortParams.sortBy, sortParams.sortOrder);
+    //     // Set wishlist status
+    //     for (let i = 0; i < products.length; i++) {
+    //       const product = products[i];
+    //       if (product.inWishlist) {
+    //         setWishlistStatus((prevStatus) =>
+    //           new Map(prevStatus).set(product.id, true)
+    //         );
+    //       } else {
+    //         setWishlistStatus((prevStatus) =>
+    //           new Map(prevStatus).set(product.id, false)
+    //         );
+    //       }
+  
+  //     const updatedProducts = await Promise.all(
+  //       products.map(async (product) => {
+  //         try {
+  //           const dynamicImportedImage = await import(
+  //             `../assets${product.imageLink}`
+  //           );
+  //           return { ...product, imageLink: dynamicImportedImage.default };
+  //         } catch (error) {
+  //           console.error("Error loading image:", error);
+  //           return product; // Return original product if image loading fails
+  //         }
+  //       })
+  //     );
+  //     setProducts(updatedProducts);
+  //   };
+  }
 
   const toggleSortModal = () => {
     setShowSortModal((prev) => !prev);
   };
 
-  //TODO filter
-  //   const handleFilterButtonClick = async() => {
-  //     const products = await getFilteredProducts(filter);
+  const toggleFilterModal = () => {
+    setShowFilterModal((prev) => !prev);
+  };
 
-  //     // Set wishlist status
-  //     for (let i = 0; i < products.length; i++) {
-  //       const product = products[i];
-  //       if (product.inWishlist) {
-  //         setWishlistStatus((prevStatus) =>
-  //           new Map(prevStatus).set(product.id, true)
-  //         );
-  //       } else {
-  //         setWishlistStatus((prevStatus) =>
-  //           new Map(prevStatus).set(product.id, false)
-  //         );
-  //       }
-  //     }
 
-  //     // Load images
-  //     const updatedProducts = await Promise.all(
-  //       products.map(async (product) => {
-  //         try {
-  //           const dynamicImportedImage = await import(
-  //             `../assets${product.imageLink}`
-  //           );
-  //           return { ...product, imageLink: dynamicImportedImage.default };
-  //         } catch (error) {
-  //           console.error("Error loading image:", error);
-  //           return product; // Return original product if image loading fails
-  //         }
-  //       })
-  //     );
-  //     setProducts(updatedProducts);
-  //   };
-
-  //   const handleInputChange = (e: any) => {
-  //     const { name, value, type, checked } = e.target;
-  //     setFilter(prevFilter => ({
-  //       ...prevFilter,
-  //       [name]: type === 'checkbox' ? checked : value
-  //     }));
-  //   };
 
   // Edit
   const handleEditPet = (pet: PetDto) => {
@@ -224,74 +232,16 @@ const PetsList = ({
       )}
 
       <button className="sort-button" onClick={toggleSortModal}>
-        Sort
+        <FontAwesomeIcon icon={faSort} /> Sort
       </button>
 
       {/* TODO */}
-      {/* <button className="btn btn-primary btn-filter" type="button" data-bs-toggle="offcanvas"
-                  data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
-        <i className="fas fa-filter"></i>
+      <button
+        className="btn btn-primary btn-filter"
+        onClick={toggleFilterModal}
+      >
+        <FontAwesomeIcon icon={faFilter} /> Filter
       </button>
-      <div className="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false"
-       tabIndex={-1} id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-        <div className="offcanvas-header">
-          <h5 className="offcanvas-title" id="offcanvasScrollingLabel">Filter Options</h5>
-            <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas"
-                  aria-label="Close"></button>
-        </div>
-        <div className="offcanvas-body">
-          <label>Product Name:</label>
-          <input type="text" name="productName" className="form-control" value={filter.productName} onChange={handleInputChange} />
-
-          <div className="mb-3">
-            <label htmlFor="minPrice">Minimum Price: <span id="minPriceValue">0</span></label>
-            <input type="range" className="form-range" min="0" max="20000" id="minPrice" onInput={updateMinPrice}
-             name="fromPrice" value={filter.fromPrice} onChange={handleInputChange}/>
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="maxPrice">Maximum Price: <span id="maxPriceValue">20000</span></label>
-            <input type="range" className="form-range" min="0" max="20000" id="maxPrice" onInput={updateMaxPrice}
-             name="toPrice" value={filter.toPrice} onChange={handleInputChange}/>
-          </div>
-
-          <label>Product Description:</label>
-          <input type="text" name="description" className="form-control" value={filter.description} onChange={handleInputChange} />
-
-          <div className="mb-3 mt-3">
-            <label className="form-check-label" htmlFor="outOfStockCheckbox">
-              Include Out of Stock
-            </label>
-            <input name="available" className="form-check-input" type="checkbox" id="outOfStockCheckbox" 
-            checked={filter.available} style={{ marginLeft: "10px", position: "relative", bottom: "4px" }} onChange={handleInputChange} />
-          </div>
-
-          <label>Brand:</label>
-          <input type="text" name="brand" className="form-control" value={filter.brand} onChange={handleInputChange} />
-
-          <div className="mb-3">
-            <label htmlFor="minDiscountPercentage">Minimum Discount Percentage: <span id="minDiscountPercentageValue">0</span></label>
-            <input type="range" className="form-range" min="0" max="100" id="minDiscountPercentage" onInput={updateMinDiscountPercentage}
-             name="fromDiscountPercentage" value={filter.fromDiscountPercentage} onChange={handleInputChange}/>
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="maxDiscountPercentage">Maximum Discount Percentage: <span id="maxDiscountPercentageValue">100</span></label>
-            <input type="range" className="form-range" min="0" max="100" id="maxDiscountPercentage" onInput={updateMaxDiscountPercentage}
-             name="toDiscountPercentage" value={filter.toDiscountPercentage} onChange={handleInputChange}/>
-          </div>
-
-          <label>Category:</label>
-          <input type="text" name="category" className="form-control" value={filter.category} onChange={handleInputChange} />
-
-          <div className="d-flex justify-content-end mt-2">
-            <Button variant="primary" onClick={() => handleFilterButtonClick()}>
-              Filter
-            </Button>
-          </div>
-        </div>
-      </div> */}
-
       <div
         className={`products-list ${fadeAnimation}`}
         style={{ marginTop: "30px" }}
@@ -461,6 +411,68 @@ const PetsList = ({
                 Apply
               </button>
               <button className="cancel-button" onClick={toggleSortModal}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFilterModal && (
+        <div className="sort-modal">
+          <div className="sort-modal-content">
+            <div className="sort-option">
+              <label className="sort-label">
+                Filter Criteria:
+                <select
+                  className="sort-select"
+                  onChange={(e) =>
+                    setFilterParams((prev) => ({
+                      ...prev,
+                      filterBy: e.target.value,
+                    }))
+                  }
+                  value={filterParams.filterCriteria}
+                >
+                  <option value="">Select Criteria</option>
+                  <option value="productName">Name</option>
+                  <option value="price">Price</option>
+                  <option value="averageRating">Rating</option>
+                  <option value="numberOfReviews">Reviews</option>
+                  <option value="postedDate">Date Added</option>
+                  <option value="productCountAvailable">
+                    Remaining in Stock
+                  </option>
+                  <option value="productSoldCount">Sold Count</option>
+                  <option value="brand">Brand</option>
+                </select>
+              </label>
+            </div>
+            <div className="sort-order" style={{display:"flex", alignItems:"center"}}>
+              <label className="sort-label" style={{marginRight:"10px"}}>Filter By</label>
+              <input
+                type="text"
+                name="filterCriteria"
+                value={filterParams.filterCriteria}
+                onChange={(e) =>
+                  setFilterParams((prev) => ({
+                    ...prev,
+                    filterCriteria: e.target.value,
+                  }))
+                }
+              />
+            </div>
+            <div className="modal-buttons">
+              <button
+                className="apply-button"
+                onClick={() => {
+                  handleFilterButtonClick();
+                  toggleFilterModal();
+                }}
+              >
+                Apply
+              </button>
+              <button className="cancel-button" onClick={toggleFilterModal}>
                 Cancel
               </button>
             </div>

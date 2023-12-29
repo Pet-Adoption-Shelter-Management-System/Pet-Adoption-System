@@ -22,7 +22,7 @@ public class Utils {
     private final EmployeeRepository employeeRepository;
 
     @Transactional
-    public UserInfo getUserInfo (String token, String role, String shelterName) throws IllegalAccessException {
+    public UserInfo getUserInfo (String token, String role) throws IllegalAccessException {
         switch (role) {
             case "adopter" -> {
                 Adopter adopter = getAdopter(token);
@@ -37,10 +37,20 @@ public class Utils {
                 else throw new IllegalAccessException("Access Denied !");
             }
             case "manager" -> {
-                Manager manager = getManager(token, shelterName);
+                System.out.println("manager");
+                Employee manager = getManager(token);
+                System.out.println("First name: ");
+                System.out.println(manager.getFirstName());
+
                 if (manager != null)
-                    return UserInfo.builder().firstName(manager.getEmployee().getFirstName()).lastName(manager.getEmployee().getLastName()).build();
-                else throw new IllegalAccessException("Access Denied !");
+                {
+                    System.out.println("Manager != null");
+                    return UserInfo.builder().firstName(manager.getFirstName()).lastName(manager.getLastName()).build();
+
+                }
+                else {
+                    throw new IllegalAccessException("Access Denied !");
+                }
             }
             default -> throw new IllegalAccessException("Access Denied !");
         }
@@ -52,9 +62,9 @@ public class Utils {
         return adopterRepository.findByEmail(username).orElse(null);
     }
     @Transactional
-    public Manager getManager(String token, String shelterName){
+    public Employee getManager (String token){
         String username = jwtService.extractUsername(token);
-        Optional<Manager> manager =  managerRepository.findByEmployee_Shelter_Name(shelterName);
+        Optional<Employee> manager =  employeeRepository.findByEmail(username);
         return manager.orElse(null);
     }
     @Transactional

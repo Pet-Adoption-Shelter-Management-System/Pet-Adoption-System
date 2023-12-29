@@ -1,19 +1,11 @@
 package com.example.Backend.Controllers;
-
-import com.example.Backend.DTO.CreateShelterRequest;
-import com.example.Backend.DTO.EmployeeDetails;
-import com.example.Backend.DTO.UpdateShelterRequest;
+import com.example.Backend.DTO.HomeRequest;
 import com.example.Backend.DTO.UserInfo;
-import com.example.Backend.Services.ManagerService;
-import com.example.Backend.Services.PetPageService;
 import com.example.Backend.Services.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/petPage")
@@ -23,7 +15,6 @@ public class PetPageController {
 
     private final Utils utils;
 
-    private final PetPageService petPageService;
     public String extractToken(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.substring(7); // Skip "Bearer " prefix
@@ -32,13 +23,13 @@ public class PetPageController {
         }
     }
 
-    @GetMapping("/getUserInfo")
+    @GetMapping ("/getUserInfo/{role}")
     public ResponseEntity<UserInfo> getUserInfo (@RequestHeader("Authorization") String authorizationHeader,
-                                                 @RequestParam("role") String role,
-                                                 @RequestParam("shelterName") String shelterName) {
+                                                 @PathVariable String role) {
         try {
             String token = extractToken(authorizationHeader);
-            return ResponseEntity.status(HttpStatus.OK).body(utils.getUserInfo(token, role, shelterName));
+            UserInfo userInfo = utils.getUserInfo(token, role);
+            return ResponseEntity.status(HttpStatus.OK).body(userInfo);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }

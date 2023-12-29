@@ -10,6 +10,11 @@ interface UserInfo {
   lastName: string;
 }
 
+interface HomeRequest {
+  role: string;
+  shelterName: string;
+}
+
 const PetsPage = () => {
   const location = useLocation();
   var { userToken, from, shelterName, role } = location.state || {};
@@ -18,49 +23,63 @@ const PetsPage = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:9080/api/petPage/getUserInfo?role=${role}&shelterName=${shelterName}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-            "Content-Type": "application/json",
-          },
-        }
+      //   let homeRequest: HomeRequest = {
+      //     role: role,
+      //     shelterName: shelterName,
+      //   };
+      let url: string = `http://localhost:9080/api/petPage/getUserInfo/${role}`;
+      const response = await axios(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log(
+        "🚀 ~ file: PetsPage.tsx:37 ~ fetchUserInfo ~ response:",
+        response.data
       );
+
       setUserInfo(response.data);
     } catch (error) {
       console.error("Access denied !");
     }
   };
 
-  // useEffect runs on component mount
-  // useEffect(() => {
-  //   if (isMounted.current) {
-  //     fetchUserInfo();
-  //     isMounted.current = false;
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (isMounted.current) {
+      fetchUserInfo();
+      isMounted.current = false;
+    }
+  }, []);
 
-  
-  const getPets = async() => {
+  const getPets = async () => {
     try {
       // TODO add the authorization header
-      const response = await axios.get("http://localhost:9080/api/allPets" ); // Replace with your backend URL
+      let url: string = "http://localhost:9080/api/allPets";
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      }); // Replace with your backend URL
       const pets: PetDto[] = response.data;
-      console.log("🚀 ~ file: PetsPage.tsx:50 ~ getPets ~ response.data:", response.data)
+      console.log(
+        "🚀 ~ file: PetsPage.tsx:50 ~ getPets ~ response.data:",
+        response.data
+      );
       return pets;
     } catch (error) {
-      alert (error);
+      alert(error);
       const pets: PetDto[] = [];
       return pets;
     }
   };
 
-  const getShelterPets = async() => {
-    let response : PetDto[] = []
-    return response
+  const getShelterPets = async () => {
+    let response: PetDto[] = [];
+    return response;
     // TODO
-  }
+  };
 
   return (
     <>
@@ -73,14 +92,14 @@ const PetsPage = () => {
         isPets={true}
       />
 
-      <PetsList
+       <PetsList
         firstName={userInfo?.firstName || "Mahmoud"}
         lastName={userInfo?.lastName || "Attia"}
         userToken={userToken}
-        role={"manager"}
+        role={role}
         getPets={getPets} //TODO chnage it according to the role
         passedPets={[]} // TODO
-      />
+      /> 
     </>
   );
 };

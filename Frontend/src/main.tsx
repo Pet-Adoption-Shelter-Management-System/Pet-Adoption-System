@@ -11,6 +11,7 @@ import StaffSignUP from "./Pages/StaffSignUP.tsx";
 import CreateShelter from "./Pages/CreateShelter.tsx";
 import Verification from "./Pages/Verification.tsx";
 import PetsPage from "./Pages/PetsPage.tsx";
+import PetDetails from "./Pages/PetDetails.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login/>
+  },
+  {
+    path: "/petDetails",
+    element: <PetDetails/>
   },
   {
     path: "/signup",
