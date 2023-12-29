@@ -13,7 +13,7 @@ public class NotificationService {
     private final EmailService emailService;
     private final TemplateEngine templateEngine;
 
-    @Async
+//    @Async
     public void notifyAdopter(Application application) {
         // Create a Thymeleaf context
         Context context = new Context();
