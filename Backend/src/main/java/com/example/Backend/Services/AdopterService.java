@@ -21,7 +21,7 @@ public class AdopterService {
     public List<ApplicationResponse> getAdopterApps(String adopterEmail) {
         Optional<Adopter> optionalAdopter = adopterRepo.findByEmail(adopterEmail);
         if (optionalAdopter.isPresent())
-            return adopterRepo.getAllApps(optionalAdopter.get().getEmail());
+            return adopterRepo.findApplicationsByAdopterId(optionalAdopter.get().getId());
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Adopter Not Found");
     }
