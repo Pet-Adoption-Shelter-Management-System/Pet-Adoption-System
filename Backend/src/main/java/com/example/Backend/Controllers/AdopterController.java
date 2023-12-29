@@ -1,7 +1,7 @@
 package com.example.Backend.Controllers;
 
 
-import com.example.Backend.DTO.ApplicationResponse;
+import com.example.Backend.Model.Application;
 import com.example.Backend.Services.AdopterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class AdopterController {
     private final AdopterService adopterService;
 
     @GetMapping("/getApps/{adopterEmail}")
-    public ResponseEntity<List<ApplicationResponse>> getAllApps(@RequestBody String adopterEmail) {
+    public ResponseEntity<List<Application>> getAllApps(@RequestBody String adopterEmail) {
         try {
             return ResponseEntity.ok(adopterService.getAdopterApps(adopterEmail));
         } catch (IllegalArgumentException e) {

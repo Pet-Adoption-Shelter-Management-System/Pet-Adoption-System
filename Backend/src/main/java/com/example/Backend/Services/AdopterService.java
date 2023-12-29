@@ -1,7 +1,7 @@
 package com.example.Backend.Services;
 
-import com.example.Backend.DTO.ApplicationResponse;
 import com.example.Backend.Model.Adopter;
+import com.example.Backend.Model.Application;
 import com.example.Backend.Repositories.AdopterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class AdopterService {
     private final AdopterRepository adopterRepo;
 
-    public List<ApplicationResponse> getAdopterApps(String adopterEmail) {
+    public List<Application> getAdopterApps(String adopterEmail) {
         Optional<Adopter> optionalAdopter = adopterRepo.findByEmail(adopterEmail);
         if (optionalAdopter.isPresent())
             return adopterRepo.findApplicationsByAdopterId(optionalAdopter.get().getId());
