@@ -14,6 +14,7 @@ const PetsPage = () => {
   var { userToken, from, shelterName, role } = location.state || {};
   const [petsInfo, setPetsInfo] = useState<PetsInfo | null>(null);
   const isMounted = useRef<boolean>(true);
+  console.log(userToken)
   return (
     <div style={{ overflowX: "hidden" }}>
       <div className="home-navbar-container" style={{ height: "100vh" }}>

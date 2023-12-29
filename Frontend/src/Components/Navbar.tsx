@@ -53,6 +53,8 @@ const Navbar: React.FC<NavbarProps> = ({
   const [searchKey, setSearchKey] = useState("");
   const [showAddAdminPopup, setShowAddAdminPopup] = useState(false);
 
+  
+
   const handleAddAdminClick = () => {
     setShowAddAdminPopup(true);
   };
@@ -227,7 +229,7 @@ const Navbar: React.FC<NavbarProps> = ({
   return (
     <div
       style={{ borderBottom: "1px solid #ccc" }}
-      className={`shadow-sm fixed-top`}
+      className={`shadow-sm sticky-top`}
     >
       <div
         style={{
@@ -408,7 +410,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <li className="nav-item">
                 <button
                   className="nav-link nav-bar-icons"
-                  onClick={handleStaffClick}
+                  onClick={handleShelterClick}
                   style={{
                     color: "black",
                     backgroundColor: `${
