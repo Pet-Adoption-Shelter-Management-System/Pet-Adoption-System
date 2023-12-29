@@ -1,6 +1,9 @@
 package com.example.Backend.DTO;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -22,7 +25,9 @@ public class PetDto {
     private String behaviour;
     private String breed;
     private String species;
-    private Boolean spayed;
-    private String shelterName;
+    private boolean spayed;
+    private boolean available;
+    private ShelterDto shelter;
     private List<String> petVaccinations;
+    private List<DocumentDto> docs;
 }

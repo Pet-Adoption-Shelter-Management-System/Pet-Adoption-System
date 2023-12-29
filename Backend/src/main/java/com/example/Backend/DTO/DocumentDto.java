@@ -1,20 +1,20 @@
 package com.example.Backend.DTO;
 
-import com.example.Backend.Model.Shelter;
+import com.example.Backend.Model.Document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * DTO for {@link Document}
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShelterDto {
-    long id;
-    String name;
-    String location;
-    String contactPhone;
-    String contactEmail;
+public class DocumentDto {
+    private String docName;
+    private String type;
+    private byte[] encodedFile;
 }

@@ -61,7 +61,7 @@ public class ShelterController {
             String token = extractToken(authorizationHeader);
             shelterServices.editShelter(token, request);
             return ResponseEntity.ok("Shelter updated Successfully");
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
@@ -76,7 +76,7 @@ public class ShelterController {
         try {
             String token = extractToken(authorizationHeader);
             return ResponseEntity.ok(shelterServices.getAllEmployees(token, shelterName));
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         } catch (ResponseStatusException e) {
             //status code will be not found in case the manager not found or the shelter not found

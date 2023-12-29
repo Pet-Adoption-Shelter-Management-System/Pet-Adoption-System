@@ -28,7 +28,6 @@ const Login = () => {
       });
       setLoading(false);
       // Success
-      alert("You've logged in successfully");
       navigate("/PetsPage", {
         state: {
           userToken: response.data.token,

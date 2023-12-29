@@ -1,11 +1,13 @@
 package com.example.Backend.Model;
 
+import com.example.Backend.DTO.PetDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @NoArgsConstructor
@@ -49,7 +51,10 @@ public class Pet {
     private String species;
 
     @Column(name = "isSpayed", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isSpayed;
+    private boolean isSpayed;
+
+    @Column(name = "isAvailable", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean isAvailable;
 
     @ManyToOne
     @JoinColumn(name = "shelterID", nullable = false)
@@ -63,4 +68,28 @@ public class Pet {
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Document> documents = new ArrayList<>();
+
+    public PetDto toDto() {
+        return PetDto.builder()
+                .id(this.getId())
+                .name(this.getName())
+                .male(this.isMale())
+                .houseTrained(this.isHouseTrained())
+                .description(this.getDescription())
+                .healthStatus(this.getHealthStatus())
+                .age(this.getAge())
+                .behaviour(this.getBehaviour())
+                .breed(this.getBreed())
+                .species(this.getSpecies())
+                .spayed(this.isSpayed())
+                .available(this.isAvailable())
+                .shelter(this.getShelter().toDto())
+                .petVaccinations(this.getVaccinations())
+                .build();
+    }
+
+    public List<String> getVaccinations() {
+        return this.getPetVaccinations().stream()
+                .map(PetVaccination::getVaccination).collect(Collectors.toList());
+    }
 }

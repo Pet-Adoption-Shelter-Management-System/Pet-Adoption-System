@@ -9,7 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PetRepository<T extends Comparable<T>> extends JpaRepository<Pet, Long> {
+public interface PetRepository extends JpaRepository<Pet, Long> {
+    @Query("SELECT p FROM Pet p WHERE p.shelter.name = :shelterName")
+    List<Pet> findByShelterName(@Param("shelterName") String shelterName);
+
     //Filter
     //species
     List<Pet> findBySpecies(String species);

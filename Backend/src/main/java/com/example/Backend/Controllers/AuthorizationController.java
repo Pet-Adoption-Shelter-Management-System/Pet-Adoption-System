@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AuthorizationController {
     private final AuthorizationService authorizationService;
+
     @PostMapping("/adopterSignUp")
     public ResponseEntity<String> adopterSignUp(@RequestBody RegisterRequest request) {
         try {

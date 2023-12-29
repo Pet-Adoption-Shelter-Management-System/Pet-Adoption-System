@@ -20,8 +20,8 @@ public class EditPetController {
 
     @PostMapping
     public ResponseEntity<String> editPet(@RequestParam(value = "petDto") String jsonString,
-                                         @RequestParam("docs") MultipartFile[] docs,
-                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+                                          @RequestParam("docs") MultipartFile[] docs,
+                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         PetProcessor petProcessor = new PetProcessor(permissions, editPetService);
         return petProcessor.processPet(jsonString, docs, authorizationHeader);
     }

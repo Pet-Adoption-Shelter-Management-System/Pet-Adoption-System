@@ -1,7 +1,7 @@
 package com.example.Backend.Services;
 
-import com.example.Backend.DTO.LoginRequest;
 import com.example.Backend.DTO.AuthResponse;
+import com.example.Backend.DTO.LoginRequest;
 import com.example.Backend.DTO.RegisterRequest;
 import com.example.Backend.Model.Adopter;
 import com.example.Backend.Model.Employee;
@@ -59,7 +59,7 @@ public class AuthorizationService {
             adopterRepository.save(adopter);
             System.out.println("before send");
             setupVerification(adopter);
-        }else{
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No any shelter's created yet!");
         }
     }
@@ -91,18 +91,19 @@ public class AuthorizationService {
                         .build();
             }
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "you are unverified");
-        }else if(optionalEmployee.isPresent()){
+        } else if (optionalEmployee.isPresent()) {
             System.out.println("found in emp table");
             return employeeLogin(optionalEmployee.get(), request);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found with the specified role");
     }
 
+
     private AuthResponse employeeLogin(Employee employee, LoginRequest request){
         if(employee.isVerified()){
             if(employee.isManager() && request.getRole().equals("manager")) {
                 Optional<Shelter> optionalShelter = shelterRepository.findByName(request.getShelterName());
-                if(optionalShelter.isPresent()){
+                if (optionalShelter.isPresent()) {
                     var jwtToken = jwtService.generateToken(employee);
                     return AuthResponse.builder()
                             .token(jwtToken)
@@ -110,7 +111,7 @@ public class AuthorizationService {
                             .build();
                 }
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter Not Found");
-            }else if(!employee.isManager() && request.getRole().equals("staff")){
+            } else if (!employee.isManager() && request.getRole().equals("staff")) {
                 var jwtToken = jwtService.generateToken(employee);
                 return AuthResponse.builder()
                         .token(jwtToken)

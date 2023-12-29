@@ -19,10 +19,9 @@ public class PetProcessor {
         this.petService = petService;
     }
 
-
     public ResponseEntity<String> processPet(String jsonString, MultipartFile[] docs, String authorizationHeader) {
         if (permissions.checkToken(authorizationHeader)) {
-            String token = authorizationHeader.substring(7);
+            String token = permissions.extractToken(authorizationHeader);
             try {
                 // verify staff
                 if (!permissions.checkStaff(token)) { // unauthorized user

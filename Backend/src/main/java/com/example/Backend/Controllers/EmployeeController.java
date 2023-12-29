@@ -1,7 +1,6 @@
 package com.example.Backend.Controllers;
 
 import com.example.Backend.DTO.AddEmployeeRequest;
-import com.example.Backend.DTO.UpdateShelterRequest;
 import com.example.Backend.Services.ManagerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
