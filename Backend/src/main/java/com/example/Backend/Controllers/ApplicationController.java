@@ -16,7 +16,7 @@ public class ApplicationController {
     private final ApplicationService appService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createApp(@RequestBody ApplicationDetails submit){
+    public ResponseEntity<String> createApp(@RequestBody ApplicationDetails submit) {
         try {
             appService.submitApp(submit);
             return ResponseEntity.ok("Application submitted Successfully");
