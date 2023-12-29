@@ -41,10 +41,10 @@ public interface PetRepository<T extends Comparable<T>> extends JpaRepository<Pe
     List<Pet> findByPetVaccinations_VaccinationAndShelter_Name(String vaccine, String shelterName);
 
     //-------------------------------------------------------------------------------------------
-    //id
-    List<Pet> findById(long toMeet);
-
-    List<Pet> findByIdAndShelter_Name(long toMeet, String shelterName);
+//    //id
+//    List<Pet> findById(long toMeet);
+//
+//    List<Pet> findByIdAndShelter_Name(long toMeet, String shelterName);
 
     //Name
     List<Pet> findByName(String name);

@@ -18,7 +18,7 @@ public class FilterPet<T extends Comparable<T>> {
     public List<Pet> meetCriteriaEmployee(String criteria, String toMeet, String shelterName) {
         try {
             return switch (criteria) {
-                case "id" -> petRepository.findByIdAndShelter_Name(Long.parseLong(toMeet),shelterName);
+//                case "id" -> petRepository.findByIdAndShelter_Name(Long.parseLong(toMeet),shelterName);
                 case "name" -> petRepository.findByNameAndShelter_Name(toMeet, shelterName);
                 case "behaviour" -> petRepository.findByBehaviourAndShelter_Name(toMeet, shelterName);
                 case "description" -> petRepository.findByDescriptionAndShelter_Name(toMeet, shelterName);
@@ -47,7 +47,7 @@ public class FilterPet<T extends Comparable<T>> {
     public List<Pet> meetCriteriaCustomer(String criteria, String toMeet) {
         try {
             return switch (criteria) {
-                case "id" -> petRepository.findById(Long.parseLong(toMeet));
+//                case "id" -> petRepository.findById(Long.parseLong(toMeet));
                 case "name" -> petRepository.findByName(toMeet);
                 case "behaviour" -> petRepository.findByBehaviour(toMeet);
                 case "description" -> petRepository.findByDescription(toMeet);
