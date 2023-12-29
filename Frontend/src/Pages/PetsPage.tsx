@@ -34,17 +34,26 @@ const PetsPage = () => {
   };
 
   // useEffect runs on component mount
-  useEffect(() => {
-    if (isMounted.current) {
-      fetchUserInfo();
-      isMounted.current = false;
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isMounted.current) {
+  //     fetchUserInfo();
+  //     isMounted.current = false;
+  //   }
+  // }, []);
 
+  
   const getPets = async() => {
-    let response : PetDto[] = []
-    return response
-    // TODO
+    try {
+      // TODO add the authorization header
+      const response = await axios.get("http://localhost:9080/api/allPets" ); // Replace with your backend URL
+      const pets: PetDto[] = response.data;
+      console.log("🚀 ~ file: PetsPage.tsx:50 ~ getPets ~ response.data:", response.data)
+      return pets;
+    } catch (error) {
+      alert (error);
+      const pets: PetDto[] = [];
+      return pets;
+    }
   };
 
   const getShelterPets = async() => {
@@ -68,8 +77,8 @@ const PetsPage = () => {
         firstName={userInfo?.firstName || "Mahmoud"}
         lastName={userInfo?.lastName || "Attia"}
         userToken={userToken}
-        role={role}
-        getPets={role === "adopter" ? getPets : getShelterPets}
+        role={"manager"}
+        getPets={getPets} //TODO chnage it according to the role
         passedPets={[]} // TODO
       />
     </>

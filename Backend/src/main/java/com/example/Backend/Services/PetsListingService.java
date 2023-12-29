@@ -8,6 +8,7 @@ import com.example.Backend.Repositories.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,7 +40,7 @@ public class PetsListingService {
             // check if the document is an image
             if (doc.getType().startsWith("image")) {
                 // encode the image
-                Path path = Paths.get(doc.getLink());
+                Path path = Paths.get(new File(".").getCanonicalPath() + doc.getLink());
                 DocumentDto dto = DocumentDto.builder()
                         .docName(path.getFileName().toString())
                         .type(doc.getType())

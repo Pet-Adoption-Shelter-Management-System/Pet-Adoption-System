@@ -34,7 +34,6 @@ const PetsList = ({
 
   // Edit and Add
   const [editPet, setEditPet] = useState(false);
-  const [addPet, setAddPet] = useState(false);
   const [editedPet, setEditedPet] = useState<EditedPet>();
 
   // Sort and Filter
@@ -56,14 +55,16 @@ const PetsList = ({
   const navigate = useNavigate();
 
   const fetchData = async () => {
-    const pets = await getPets();
-    setPets(pets);
+    const petss = await getPets();
+    console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
+    setPets(petss);
+    console.log("Pets: ", pets);
   };
 
   // Get the pets once the component is mounted
   useEffect(() => {
     if (isMounted.current) {
-      if (passedPets) setPets(passedPets);
+      if (passedPets.length > 0) setPets(passedPets);
       else fetchData();
       isMounted.current = false;
     }
@@ -84,8 +85,8 @@ const PetsList = ({
     }, 300);
   };
 
- // TODO go to the PetDetails
-    const handlePetClicked = (pet: PetDto) => {
+  // TODO go to the PetDetails
+  const handlePetClicked = (pet: PetDto) => {
     //   const id = product.id;
     //   navigate("/product-details", {
     //     state: {
@@ -96,25 +97,24 @@ const PetsList = ({
     //       token: userToken,
     //     },
     //   });
-    };
+  };
 
   //TODO sorting
-    const handleSortButtonClick = async() => {
-  //     const products = await getSortedProducts(sortParams.sortBy, sortParams.sortOrder);
-
-  //     // Set wishlist status
-  //     for (let i = 0; i < products.length; i++) {
-  //       const product = products[i];
-  //       if (product.inWishlist) {
-  //         setWishlistStatus((prevStatus) =>
-  //           new Map(prevStatus).set(product.id, true)
-  //         );
-  //       } else {
-  //         setWishlistStatus((prevStatus) =>
-  //           new Map(prevStatus).set(product.id, false)
-  //         );
-  //       }
-      }
+  const handleSortButtonClick = async () => {
+    //     const products = await getSortedProducts(sortParams.sortBy, sortParams.sortOrder);
+    //     // Set wishlist status
+    //     for (let i = 0; i < products.length; i++) {
+    //       const product = products[i];
+    //       if (product.inWishlist) {
+    //         setWishlistStatus((prevStatus) =>
+    //           new Map(prevStatus).set(product.id, true)
+    //         );
+    //       } else {
+    //         setWishlistStatus((prevStatus) =>
+    //           new Map(prevStatus).set(product.id, false)
+    //         );
+    //       }
+  };
 
   //     // Load images
   //     const updatedProducts = await Promise.all(
@@ -133,60 +133,54 @@ const PetsList = ({
   //     setProducts(updatedProducts);
   //   };
 
-    const toggleSortModal = () => {
-      setShowSortModal(prev => !prev);
-    };
-
-
-  //TODO filter
-//   const handleFilterButtonClick = async() => {
-//     const products = await getFilteredProducts(filter);
-    
-//     // Set wishlist status
-//     for (let i = 0; i < products.length; i++) {
-//       const product = products[i];
-//       if (product.inWishlist) {
-//         setWishlistStatus((prevStatus) =>
-//           new Map(prevStatus).set(product.id, true)
-//         );
-//       } else {
-//         setWishlistStatus((prevStatus) =>
-//           new Map(prevStatus).set(product.id, false)
-//         );
-//       }
-//     }
-
-//     // Load images
-//     const updatedProducts = await Promise.all(
-//       products.map(async (product) => {
-//         try {
-//           const dynamicImportedImage = await import(
-//             `../assets${product.imageLink}`
-//           );
-//           return { ...product, imageLink: dynamicImportedImage.default };
-//         } catch (error) {
-//           console.error("Error loading image:", error);
-//           return product; // Return original product if image loading fails
-//         }
-//       })
-//     );
-//     setProducts(updatedProducts);
-//   };
-
-//   const handleInputChange = (e: any) => {
-//     const { name, value, type, checked } = e.target;
-//     setFilter(prevFilter => ({
-//       ...prevFilter,
-//       [name]: type === 'checkbox' ? checked : value
-//     }));
-//   };
-
-
-  // Edit and add
-  const handleAddPet = () => {
-    setAddPet(true);
+  const toggleSortModal = () => {
+    setShowSortModal((prev) => !prev);
   };
 
+  //TODO filter
+  //   const handleFilterButtonClick = async() => {
+  //     const products = await getFilteredProducts(filter);
+
+  //     // Set wishlist status
+  //     for (let i = 0; i < products.length; i++) {
+  //       const product = products[i];
+  //       if (product.inWishlist) {
+  //         setWishlistStatus((prevStatus) =>
+  //           new Map(prevStatus).set(product.id, true)
+  //         );
+  //       } else {
+  //         setWishlistStatus((prevStatus) =>
+  //           new Map(prevStatus).set(product.id, false)
+  //         );
+  //       }
+  //     }
+
+  //     // Load images
+  //     const updatedProducts = await Promise.all(
+  //       products.map(async (product) => {
+  //         try {
+  //           const dynamicImportedImage = await import(
+  //             `../assets${product.imageLink}`
+  //           );
+  //           return { ...product, imageLink: dynamicImportedImage.default };
+  //         } catch (error) {
+  //           console.error("Error loading image:", error);
+  //           return product; // Return original product if image loading fails
+  //         }
+  //       })
+  //     );
+  //     setProducts(updatedProducts);
+  //   };
+
+  //   const handleInputChange = (e: any) => {
+  //     const { name, value, type, checked } = e.target;
+  //     setFilter(prevFilter => ({
+  //       ...prevFilter,
+  //       [name]: type === 'checkbox' ? checked : value
+  //     }));
+  //   };
+
+  // Edit
   const handleEditPet = (pet: PetDto) => {
     console.log(pet);
     // Your logic for editing a pet can go here
@@ -212,8 +206,8 @@ const PetsList = ({
     setEditPet(false);
   };
 
-  const resetAddButton = () => {
-    setAddPet(false);
+  const handleAppliyClicled = (pet: PetDto) => {
+    //TODO
   };
 
   return (
@@ -228,26 +222,7 @@ const PetsList = ({
           />
         </>
       )}
-      {addPet && (
-        <>
-          <AddEditPet
-            isEdit={false}
-            adminToken={userToken}
-            resetButton={resetAddButton}
-          />
-        </>
-      )}
-      {(role === "manager" || role === "staff") && (
-        <div className="addNewProduct">
-          <button
-            className="btn btn-primary"
-            onClick={() => setAddPet(true)}
-            style={{ marginLeft: "20px", marginTop: "20px" }}
-          >
-            +Add A New Pet 
-          </button>
-        </div>
-      )}
+
       <button className="sort-button" onClick={toggleSortModal}>
         Sort
       </button>
@@ -317,7 +292,10 @@ const PetsList = ({
         </div>
       </div> */}
 
-      <div className={`products-list ${fadeAnimation}`}>
+      <div
+        className={`products-list ${fadeAnimation}`}
+        style={{ marginTop: "30px" }}
+      >
         {currentPets.map((pet) => (
           <div
             key={pet.id}
@@ -326,7 +304,7 @@ const PetsList = ({
           >
             <div
               style={{
-                width: "90%",
+                width: "85%",
                 height: "50%",
                 position: "relative",
                 marginBottom: "8px",
@@ -335,20 +313,49 @@ const PetsList = ({
                 transform: "translate(-50%, 0)",
               }}
             >
-              {/* {product.imageLink && (
-                <img
-                  src={product.imageLink}
-                  alt={product.productName}
-                  style={{ width: "100%", height: "auto" }}
-                />
-              )} */}
+              <img
+                src={`data:${pet.docs[0].type};base64,${pet.docs[0].encodedFile}`}
+                alt={pet.docs[0].docName}
+                style={{ width: "100%", height: "auto", borderRadius: "5px" }}
+              />
             </div>
-            <div style={{ height: "50%", position: "relative" }}>
+            <div
+              style={{
+                position: "relative",
+                marginTop: "20px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Name</td>
+                    <td>{pet.name}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ backgroundColor: "white" }}>Gender</td>
+                    <td style={{ backgroundColor: "white" }}>
+                      {pet.male ? "Male" : "Felmale"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Age</td>
+                    <td>{pet.age} years</td>
+                  </tr>
+                  <tr>
+                    <td style={{ backgroundColor: "white" }}>Breed</td>
+                    <td style={{ backgroundColor: "white" }}>{pet.breed}</td>
+                  </tr>
+                  <tr>
+                    <td>Shelter</td>
+                    <td>{pet.shelterName}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-              <p>
-                <strong>{pet.name}</strong>
-              </p>
-  
               {(role === "manager" || role === "staff") && (
                 <button
                   className="btn btn-primary"
@@ -357,10 +364,25 @@ const PetsList = ({
                     e.stopPropagation();
                     handleEditPet(pet);
                   }}
-                  style={{ width: "100%" }}
+                  style={{ width: "100%", marginTop: "15px" }}
                 >
-                  Edit
+                  <strong>Edit</strong>
                 </button>
+              )}
+              {role === "adopter" && (
+                <>
+                  <button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAppliyClicled(pet);
+                    }}
+                    style={{ width: "100%", marginTop: "15px" }}
+                  >
+                    <strong>Apply For Adoption</strong>
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -380,14 +402,25 @@ const PetsList = ({
             <div className="sort-option">
               <label className="sort-label">
                 Sort by:
-                <select className="sort-select" onChange={(e) => setSortParams(prev => ({ ...prev, sortBy: e.target.value }))} value={sortParams.sortBy}>
+                <select
+                  className="sort-select"
+                  onChange={(e) =>
+                    setSortParams((prev) => ({
+                      ...prev,
+                      sortBy: e.target.value,
+                    }))
+                  }
+                  value={sortParams.sortBy}
+                >
                   <option value="">Select Criteria</option>
                   <option value="productName">Name</option>
                   <option value="price">Price</option>
                   <option value="averageRating">Rating</option>
                   <option value="numberOfReviews">Reviews</option>
                   <option value="postedDate">Date Added</option>
-                  <option value="productCountAvailable">Remaining in Stock</option>
+                  <option value="productCountAvailable">
+                    Remaining in Stock
+                  </option>
                   <option value="productSoldCount">Sold Count</option>
                   <option value="brand">Brand</option>
                 </select>
@@ -395,20 +428,44 @@ const PetsList = ({
             </div>
             <div className="sort-order">
               <label className="sort-label">
-                <input type="radio" name="sortOrder" checked={sortParams.sortOrder} onChange={() => setSortParams(prev => ({ ...prev, sortOrder: true }))} />
+                <input
+                  type="radio"
+                  name="sortOrder"
+                  checked={sortParams.sortOrder}
+                  onChange={() =>
+                    setSortParams((prev) => ({ ...prev, sortOrder: true }))
+                  }
+                />
                 Ascending
               </label>
               <label className="sort-label">
-                <input type="radio" name="sortOrder" checked={!sortParams.sortOrder} onChange={() => setSortParams(prev => ({ ...prev, sortOrder: false }))} />
+                <input
+                  type="radio"
+                  name="sortOrder"
+                  checked={!sortParams.sortOrder}
+                  onChange={() =>
+                    setSortParams((prev) => ({ ...prev, sortOrder: false }))
+                  }
+                />
                 Descending
               </label>
             </div>
             <div className="modal-buttons">
-              <button className="apply-button" onClick={() => { handleSortButtonClick(); toggleSortModal(); }}>Apply</button>
-              <button className="cancel-button" onClick={toggleSortModal}>Cancel</button>
+              <button
+                className="apply-button"
+                onClick={() => {
+                  handleSortButtonClick();
+                  toggleSortModal();
+                }}
+              >
+                Apply
+              </button>
+              <button className="cancel-button" onClick={toggleSortModal}>
+                Cancel
+              </button>
             </div>
           </div>
-        </div>      
+        </div>
       )}
     </div>
   );
