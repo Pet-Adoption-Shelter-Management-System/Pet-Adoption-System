@@ -72,21 +72,60 @@ const PetsList = ({
   const isMounted = useRef(true);
   const navigate = useNavigate();
 
-  const fetchData = async () => {
-    const petss = await getPets();
-    console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
-    setPets(petss);
-    console.log("Pets: ", pets);
-  };
+  // const fetchData = async () => {
+  //   const petss = await getPets();
+  //   console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
+  //   setPets(petss);
+  //   console.log("Pets: ", pets);
+  // };
 
   // Get the pets once the component is mounted
   useEffect(() => {
-    if (isMounted.current) {
-      if (passedPets.length > 0) setPets(passedPets);
-      else fetchData();
-      isMounted.current = false;
-    }
-  }, []);
+    
+    const fetchData = async () => {
+      const petss = await getPets();
+      console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
+      setPets(petss);
+      console.log("Pets: ", pets);
+    };
+
+    const fetchSearchedData = async () => {
+      // Set wishlist status
+      for (let i = 0; i < passedPets.length; i++) {
+        const pet = passedPets[i];
+        // if (product.inWishlist) {
+        //   setWishlistStatus((prevStatus) =>
+        //     new Map(prevStatus).set(product.id, true)
+        //   );
+        // } else {
+        //   setWishlistStatus((prevStatus) =>
+        //     new Map(prevStatus).set(product.id, false)
+        //   );
+        // }
+      }
+
+      // Load images
+      const updatedProducts = await Promise.all(
+        passedPets.map(async (pet) => {
+          try {
+            pet.age = pet.age + 5;
+            pet.age = pet.age - 5;
+            return { ...pet, age: pet.age };
+          } catch (error) {
+            console.error("Error loading image:", error);
+            return pet; // Return original product if image loading fails
+          }
+        })
+      );
+
+      setPets(updatedProducts);
+    };
+
+    console.log(passedPets);
+    if (passedPets) {
+      fetchSearchedData();
+    } else fetchData();
+  }, [passedPets, getPets]);
 
   // Get current pets
   const indexOfLastPet = currentPage * petsPerPage;

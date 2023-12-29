@@ -659,7 +659,7 @@ const AddEditPet = ({
                   House trained
                 </label>
               </div>
-              {!isEdit && (
+              {isEdit && (
                 <>
                   <div
                     className="productFormField"

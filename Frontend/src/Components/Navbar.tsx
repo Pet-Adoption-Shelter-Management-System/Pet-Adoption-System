@@ -101,6 +101,7 @@ const Navbar: React.FC<NavbarProps> = ({
         from: "Details",
         shelterName: shelterName,
         role: role,
+        pets: [],
       },
     });
   };
@@ -171,22 +172,6 @@ const Navbar: React.FC<NavbarProps> = ({
     setSearchKey(e.target.value);
   };
 
-  //   const handleSearchProduct = async (event: any) => {
-  //     event.preventDefault();
-
-  //     const returnedProducts = await getSearchedProducts();
-
-  //     navigate("/catalog", {
-  //       state: {
-  //         userToken: token,
-  //         isAdmin: isAdmin,
-  //         firstName: firstName,
-  //         lastName: lastName,
-  //         passedProducts: returnedProducts
-  //       },
-  //     });
-  //   };
-
   function toHomePage(): void {
     navigate("/PetsPage");
   }
@@ -194,45 +179,54 @@ const Navbar: React.FC<NavbarProps> = ({
   const [isHomeUse, setIsHomeUse] = useState(true);
   const [isNavbarVisible, setIsNavbarVisible] = useState(true);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      // Check if the scroll position is greater than or equal to 100vh
-      setIsNavbarVisible(window.scrollY < window.innerHeight);
 
-      // Optionally, update the isHome state based on your criteria
-      // For example, check if the user is on the home page
-      // Replace the condition with your logic
-      //   setIsHomeUse(isHome);
-    };
+  const getSearchedPets = async () => {
+    console.log ("key:  ", searchKey)
+    let url: string = "";
+    let entity: string = "pet";
+    let criteria: string = "search";
+    if (role === "adopter") {
+      url = `http://localhost:9080/api/filter/customerFilterEntity/${entity}/${criteria}/${searchKey}`;
+    } else {
+      url = `http://localhost:9080/api/filter/employeeFilterEntity/${entity}/${criteria}/${searchKey}/${shelterName}`;
+    }
+    try {
+      const response = await axios(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data);
+      const pets: PetDto[] = response.data;
+      return pets;
+    } catch (error) {
+      console.log("Error:", error);
+      const pets: PetDto[] = [];
+      return pets;
+    }
+  };
 
-    // Add event listener for scroll
-    window.addEventListener("scroll", handleScroll);
+  const handleSearchPets = async (event: any) => {
+    event.preventDefault();
 
-    // Remove the event listener when the component unmounts
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+    const returnedPets = await getSearchedPets();
 
-  //   const getSearchedProducts = async () => {
-  //     console.log("In get searched products");
-  //     let url = `http://localhost:9080/api/search/${searchKey}`;
-  //     try {
-  //       const response = await axios(url, {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
-  //       console.log(response.data);
-  //       const products: Product[] = response.data;
-  //       return products;
-  //     } catch (error) {
-  //       console.log("Error:", error);
-  //       const products: Product[] = [];
-  //       return products;
-  //     }
-  //   }
+    console.log(
+      "🚀 ~ file: Navbar.tsx:232 ~ handleSearchPets ~ returnedPets:",
+      returnedPets
+    );
+
+    navigate("/PetsPage", {
+      state: {
+        userToken: token,
+        from: "Search",
+        shelterName: shelterName,
+        role: role,
+        passedPets: returnedPets,
+      },
+    });
+  };
 
   return (
     <>
@@ -271,7 +265,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 >
                   <input
                     type="search"
-                    placeholder="Search your product"
+                    placeholder="Search your pet"
                     className="form-control bg-white"
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
@@ -282,7 +276,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     className={`btn ${
                       isSearchFocused ? "btn-secondary" : "btn-light"
                     }`}
-                    //   onClick={handleSearchProduct}
+                    onClick={handleSearchPets}
                   >
                     <FontAwesomeIcon icon={faSearch} />
                   </button>
