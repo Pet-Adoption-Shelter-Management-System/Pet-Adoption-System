@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AuthorizationController {
     private final AuthorizationService authorizationService;
+
     @PostMapping("/adopterSignUp")
     public ResponseEntity<String> adopterSignUp(@RequestBody RegisterRequest request) {
         try {
@@ -31,6 +32,7 @@ public class AuthorizationController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         try {
+            System.out.println("login controller");
             return ResponseEntity.ok(authorizationService.login(request));
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(AuthResponse.builder().token(e.getMessage()).build());

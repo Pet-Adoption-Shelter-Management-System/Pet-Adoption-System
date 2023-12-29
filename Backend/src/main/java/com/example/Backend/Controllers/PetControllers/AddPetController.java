@@ -22,7 +22,6 @@ public class AddPetController {
     public ResponseEntity<String> addPet(@RequestParam(value = "petDto") String jsonString,
                                          @RequestParam("docs") MultipartFile[] docs,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        System.out.println("add pet controller");
         PetProcessor petProcessor = new PetProcessor(permissions, addPetService);
         return petProcessor.processPet(jsonString, docs, authorizationHeader);
     }

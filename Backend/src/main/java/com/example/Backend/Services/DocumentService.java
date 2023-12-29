@@ -16,8 +16,10 @@ import java.nio.file.Paths;
 public class DocumentService {
 
     public String[][] saveDocs(MultipartFile[] docs, Long id) throws Exception {
-        StringBuilder linkToSave = new StringBuilder(File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "pets" + File.separator + id);
-        String directoryPath = new File(".").getCanonicalPath() + linkToSave;
+        StringBuilder petDir = new StringBuilder(File.separator + "src" + File.separator + "main" + File.separator
+                + "resources" + File.separator + "static" + File.separator + "pets" + File.separator + id);
+
+        String directoryPath = new File(".").getCanonicalPath() + petDir;
         // Create the directory if it does not exist
         createDirectoryIfNotExists(directoryPath);
 
@@ -30,6 +32,7 @@ public class DocumentService {
             }
             String docLink = directoryPath + File.separator + docs[i].getOriginalFilename();
             System.out.println(docLink);
+            StringBuilder linkToSave = new StringBuilder(petDir);
             linkToSave.append(File.separator).append(docs[i].getOriginalFilename());
             try {
                 Files.write(Paths.get(docLink), docs[i].getBytes());

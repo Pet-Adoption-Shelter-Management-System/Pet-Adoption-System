@@ -8,5 +8,6 @@ import java.util.NoSuchElementException;
 
 public interface IPetService {
     void processPet(PetDto petDto, MultipartFile[] docs) throws IOException, NoSuchElementException;
+
     String getSuccessMessage();
 }

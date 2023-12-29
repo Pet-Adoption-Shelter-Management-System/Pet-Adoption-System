@@ -33,16 +33,17 @@ public class EditPetService extends AbstractPetService {
         if (petOptional.isEmpty()) {
             throw new RuntimeException("Pet does not exist");
         }
-        Optional<Shelter> optionalShelter = shelterRepository.findByName(petDto.getShelterName());
+        Optional<Shelter> optionalShelter = shelterRepository.findByName(petDto.getShelter().getName());
         if (optionalShelter.isEmpty()) {
             throw new RuntimeException("Shelter does not exist");
         }
         try {
             Pet pet = petOptional.get();
+            System.out.println(petDto.isAvailable());
             setPet(petDto, pet, optionalShelter.get());
             petVaccinationRepository.deleteByPet(pet);
             setVaccinations(petDto.getPetVaccinations(), pet);
-            if (docs.length > 0) {
+            if (docs.length > 0 && !docs[0].isEmpty()) {
                 documentRepository.deleteByPet(pet);
                 setDocs(documentService.saveDocs(docs, petDto.getId()), pet);
             }

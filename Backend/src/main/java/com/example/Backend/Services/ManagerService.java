@@ -1,9 +1,6 @@
 package com.example.Backend.Services;
 
-import com.example.Backend.DTO.AddEmployeeRequest;
-import com.example.Backend.DTO.CreateShelterRequest;
-import com.example.Backend.DTO.EmployeeDetails;
-import com.example.Backend.DTO.UpdateShelterRequest;
+import com.example.Backend.DTO.*;
 import com.example.Backend.Model.Adopter;
 import com.example.Backend.Model.Employee;
 import com.example.Backend.Model.Shelter;
@@ -16,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -56,12 +52,31 @@ public class ManagerService {
         }
     }
 
+    public ShelterDto getShelter(String shelterName) {
+        Optional<Shelter> optionalShelter = shelterRepository.findByName(shelterName);
+        if (optionalShelter.isPresent()) {
+            Shelter shelter = optionalShelter.get();
+            return ShelterDto.builder()
+                    .name(shelter.getName())
+                    .location(shelter.getLocation())
+                    .contactEmail(shelter.getContactEmail())
+                    .contactPhone(shelter.getContactPhone())
+                    .build();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter Not Found");
+        }
+    }
+
     public void editShelter(String token, UpdateShelterRequest request) {
         String email = jwtService.extractUsername(token);
         verifyManager(email);
-        Optional<Shelter> optionalShelter = shelterRepository.findByName(request.getShelterName());
+        Optional<Shelter> optionalShelter = shelterRepository.findByName(request.getOldName());
         if (optionalShelter.isPresent()) {
+            if(shelterRepository.findByName(request.getShelterName()).isPresent() && !request.getShelterName().equals(request.getOldName())){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "The new shelter name is already used by another shelter! Please enter a unique name");
+            }
             Shelter shelter = optionalShelter.get();
+            shelter.setName(request.getShelterName());
             shelter.setLocation(request.getAddress());
             shelter.setContactEmail(request.getContactEmail());
             shelter.setContactPhone(request.getContactPhone());
@@ -76,7 +91,7 @@ public class ManagerService {
         verifyManager(email);
         Optional<Shelter> optionalShelter = shelterRepository.findByName(shelterName);
         if (optionalShelter.isPresent())
-            return shelterRepository.getAllEmployees(optionalShelter.get().getId());
+            return shelterRepository.getNonManagerEmployees(optionalShelter.get().getId());
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter Not Found");
     }
@@ -95,7 +110,7 @@ public class ManagerService {
                 handleFoundEmployee(optionalEmployee.get(), request);
             else
                 handleNewEmployee(request, optionalShelter.get());
-        }else
+        } else
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter Not Found");
     }
 
@@ -105,11 +120,11 @@ public class ManagerService {
         if (!request.isManager())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This email already used by a staff member!");
         //promote unverified staff member to be a manager
-        if (!employee.isVerified()){
+        if (!employee.isVerified()) {
             employee.setManager(true);
             employeeRepository.save(employee);
             newEmployeeVerification(employee);
-        }else{
+        } else {
             //promote a verified staff member to be a manager
             employee.setManager(true);
             employeeRepository.save(employee);

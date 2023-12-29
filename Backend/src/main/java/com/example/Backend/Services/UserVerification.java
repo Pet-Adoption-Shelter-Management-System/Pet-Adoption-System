@@ -38,8 +38,7 @@ public class UserVerification {
         if (!adopter.isVerified()) {
             adopter.setVerified(true);
             adopterRepository.save(adopter);
-        }
-        else {
+        } else {
             throw new IllegalStateException("adopter already verified");
         }
     }

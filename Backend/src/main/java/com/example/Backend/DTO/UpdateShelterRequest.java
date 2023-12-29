@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateShelterRequest {
+    private String oldName;
     private String shelterName;
     private String address;
     private String contactPhone;
