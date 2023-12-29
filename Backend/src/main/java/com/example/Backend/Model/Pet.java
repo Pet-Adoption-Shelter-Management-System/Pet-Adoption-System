@@ -53,6 +53,7 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "shelterID", nullable = false)
+    @JsonIgnore
     private Shelter shelter;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

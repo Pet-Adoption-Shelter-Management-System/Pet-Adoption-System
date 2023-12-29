@@ -1,7 +1,6 @@
 package com.example.Backend.Repositories;
 
 import com.example.Backend.DTO.EmployeeDetails;
-import com.example.Backend.Model.Employee;
 import com.example.Backend.Model.Shelter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
