@@ -10,6 +10,7 @@ import com.example.Backend.Repositories.PetRepository;
 import com.example.Backend.Repositories.ShelterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,15 +19,17 @@ import java.util.Optional;
 
 
 @Service
+@EnableAsync
 @RequiredArgsConstructor
 @Transactional
 public class ApplicationService {
 
-    private final AdopterRepository adopterRepo;
+    private final Utils utils;
     private final PetRepository petRepo;
     private final ShelterRepository shelterRepo;
     private final Utils utils;
     private final ApplicationRepository applicationRepo;
+    private final NotificationService notificationService;
 
     public void submitApp(String token, long petId, long shelterId) {
         Optional<Pet> optionalPet = petRepo.findById(petId);
@@ -54,5 +57,24 @@ public class ApplicationService {
                 .date(java.time.LocalDateTime.now())
                 .build();
         applicationRepo.save(application);
+        notificationService.notifyAdopter(application);
+    }
+
+    public void manageApp(long appId, String status) {
+        Optional<Application> optionalApp = applicationRepo.findById(appId);
+        if (optionalApp.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Application not found");
+        }
+        Application application = optionalApp.get();
+        if (!status.equals("Approved") && !status.equals("Rejected") && !status.equals("Pending")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status");
+        }
+        application.setStatus(status);
+        applicationRepo.save(application);
+        if (status.equals("Rejected")) {
+            Pet pet = application.getPet();
+            pet.setAvailable(true);
+            petRepo.save(pet);
+        }
     }
 }
