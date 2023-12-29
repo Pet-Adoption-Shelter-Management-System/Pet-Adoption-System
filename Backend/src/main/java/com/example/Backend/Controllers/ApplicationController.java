@@ -1,5 +1,6 @@
 package com.example.Backend.Controllers;
 
+import com.example.Backend.DTO.AppManageDto;
 import com.example.Backend.Middleware.Permissions;
 import com.example.Backend.Services.ApplicationService;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +44,7 @@ public class ApplicationController {
 
     @PostMapping("/manage")
     public ResponseEntity<String> manageApp(
-            @RequestParam long appId,
-            @RequestParam String status,
+            @RequestBody AppManageDto appManageDto,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
     ) {
         if (permissions.checkToken(authorizationHeader)) {
@@ -53,7 +53,7 @@ public class ApplicationController {
                 if (!permissions.checkStaff(token)) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
                 }
-                appService.manageApp(appId, status);
+                appService.manageApp(appManageDto.getAppId(), appManageDto.getStatus());
                 return ResponseEntity.status(HttpStatus.OK).body("Application managed Successfully");
             } catch (ResponseStatusException e) {
                 return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
