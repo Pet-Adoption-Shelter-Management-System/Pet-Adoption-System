@@ -55,9 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({
   const [searchKey, setSearchKey] = useState("");
   const [showAddAdminPopup, setShowAddAdminPopup] = useState(false);
 
-
   const [addNewPet, setAddNewPet] = useState(false);
-
 
   const handleAddAdminClick = () => {
     setShowAddAdminPopup(true);
@@ -98,11 +96,11 @@ const Navbar: React.FC<NavbarProps> = ({
 
   const handlePetsClick = () => {
     navigate("/PetsPage", {
-      state: {        
+      state: {
         userToken: token,
         from: "Details",
         shelterName: shelterName,
-        role:role
+        role: role,
       },
     });
   };
@@ -237,7 +235,6 @@ const Navbar: React.FC<NavbarProps> = ({
   //   }
 
   return (
-
     <>
       {addNewPet && (
         <>
@@ -350,7 +347,7 @@ const Navbar: React.FC<NavbarProps> = ({
                             transition: "color 0.3s ease",
                           }}
                         >
-                           <FontAwesomeIcon icon={faUserPlus} /> Add Employee
+                          <FontAwesomeIcon icon={faUserPlus} /> Add Employee
                         </button>
                       </li>
                     )}
@@ -444,35 +441,33 @@ const Navbar: React.FC<NavbarProps> = ({
                     </button>
                   </li>
                 )}
-                
-            {
-                role !== "adopter" && (
-                    <li className="nav-item">
-                <button
-                  className="nav-link nav-bar-icons"
-                  onClick={handleShelterClick}
-                  style={{
-                    color: "black",
-                    backgroundColor: `${
-                      isShelterInfo! ? "rgb(133, 133, 133)" : "none"
-                    }`,
-                  }}
-                >
-                  <h5>Shelter Info</h5>
-                </button>
-              </li>
-                )
-            }
+
+                {role !== "adopter" && (
+                  <li className="nav-item">
+                    <button
+                      className="nav-link nav-bar-icons"
+                      onClick={handleShelterClick}
+                      style={{
+                        color: "black",
+                        backgroundColor: `${
+                          isShelterInfo! ? "rgb(133, 133, 133)" : "none"
+                        }`,
+                      }}
+                    >
+                      <h5>Shelter Info</h5>
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
         </nav>
-              <AddAdminPopup
-        show={showAddAdminPopup}
-        handleClose={handleCloseAddAdminPopup}
-        token={token}
-        shelterName={shelterName}
-      />
+        <AddAdminPopup
+          show={showAddAdminPopup}
+          handleClose={handleCloseAddAdminPopup}
+          token={token}
+          shelterName={shelterName}
+        />
       </div>
     </>
   );
