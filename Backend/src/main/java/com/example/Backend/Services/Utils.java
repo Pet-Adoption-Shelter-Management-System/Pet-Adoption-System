@@ -1,4 +1,5 @@
 package com.example.Backend.Services;
+
 import com.example.Backend.DTO.UserInfo;
 import com.example.Backend.Model.Adopter;
 import com.example.Backend.Model.Employee;
@@ -22,7 +23,7 @@ public class Utils {
     private final EmployeeRepository employeeRepository;
 
     @Transactional
-    public UserInfo getUserInfo (String token, String role, String shelterName) throws IllegalAccessException {
+    public UserInfo getUserInfo(String token, String role, String shelterName) throws IllegalAccessException {
         switch (role) {
             case "adopter" -> {
                 Adopter adopter = getAdopter(token);
@@ -47,18 +48,20 @@ public class Utils {
     }
 
     @Transactional
-    public Adopter getAdopter(String token){
+    public Adopter getAdopter(String token) {
         String username = jwtService.extractUsername(token);
         return adopterRepository.findByEmail(username).orElse(null);
     }
+
     @Transactional
-    public Manager getManager(String token, String shelterName){
+    public Manager getManager(String token, String shelterName) {
         String username = jwtService.extractUsername(token);
-        Optional<Manager> manager =  managerRepository.findByEmployee_Shelter_Name(shelterName);
+        Optional<Manager> manager = managerRepository.findByEmployee_Shelter_Name(shelterName);
         return manager.orElse(null);
     }
+
     @Transactional
-    public Employee getEmployee(String token){
+    public Employee getEmployee(String token) {
         String username = jwtService.extractUsername(token);
         return employeeRepository.findByEmail(username).orElse(null);
     }

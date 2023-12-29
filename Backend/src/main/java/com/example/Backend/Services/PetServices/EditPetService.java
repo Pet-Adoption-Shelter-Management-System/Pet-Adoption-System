@@ -33,7 +33,7 @@ public class EditPetService extends AbstractPetService {
         if (petOptional.isEmpty()) {
             throw new RuntimeException("Pet does not exist");
         }
-        Optional<Shelter> optionalShelter = shelterRepository.findByName(petDto.getShelterName());
+        Optional<Shelter> optionalShelter = shelterRepository.findByName(petDto.getShelter().getName());
         if (optionalShelter.isEmpty()) {
             throw new RuntimeException("Shelter does not exist");
         }

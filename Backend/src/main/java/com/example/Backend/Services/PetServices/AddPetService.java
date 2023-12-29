@@ -3,7 +3,6 @@ package com.example.Backend.Services.PetServices;
 import com.example.Backend.DTO.PetDto;
 import com.example.Backend.Model.Pet;
 import com.example.Backend.Model.Shelter;
-import com.example.Backend.Repositories.DocumentRepository;
 import com.example.Backend.Repositories.PetRepository;
 import com.example.Backend.Repositories.PetVaccinationRepository;
 import com.example.Backend.Repositories.ShelterRepository;
@@ -28,7 +27,7 @@ public class AddPetService extends AbstractPetService {
 
     @Override
     public void processPet(PetDto petDto, MultipartFile[] docs) throws IOException {
-        Optional<Shelter> optionalShelter = shelterRepository.findByName(petDto.getShelterName());
+        Optional<Shelter> optionalShelter = shelterRepository.findByName(petDto.getShelter().getName());
         if (optionalShelter.isEmpty()) {
             throw new RuntimeException("Shelter does not exist");
         }

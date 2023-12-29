@@ -1,8 +1,10 @@
 package com.example.Backend.Model;
 
+import com.example.Backend.DTO.ShelterDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,4 +46,14 @@ public class Shelter {
     @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Application> applications = new ArrayList<>();
+
+    public ShelterDto toDto() {
+        return ShelterDto.builder()
+                .id(id)
+                .name(name)
+                .location(location)
+                .contactPhone(contactPhone)
+                .contactEmail(contactEmail)
+                .build();
+    }
 }

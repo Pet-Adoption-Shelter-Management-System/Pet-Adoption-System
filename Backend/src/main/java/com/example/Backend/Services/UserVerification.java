@@ -2,7 +2,6 @@ package com.example.Backend.Services;
 
 import com.example.Backend.Model.Adopter;
 import com.example.Backend.Repositories.AdopterRepository;
-import com.example.Backend.Repositories.EmployeeRepository;
 import com.example.Backend.config.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,8 +26,7 @@ public class UserVerification {
         if (!adopter.isVerified()) {
             adopter.setVerified(true);
             adopterRepository.save(adopter);
-        }
-        else {
+        } else {
             throw new IllegalStateException("adopter already verified");
         }
     }
