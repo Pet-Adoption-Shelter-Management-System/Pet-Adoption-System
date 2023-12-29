@@ -107,15 +107,14 @@ public class ManagerService {
         //promote unverified staff member to be a manager
         if (!employee.isVerified()){
             employee.setManager(true);
-            employee.setShelter(null);
             employeeRepository.save(employee);
             newEmployeeVerification(employee);
+        }else{
+            //promote a verified staff member to be a manager
+            employee.setManager(true);
+            employeeRepository.save(employee);
+            promotionNotification(employee);
         }
-        //promote a verified staff member to be a manager
-        employee.setManager(true);
-        employee.setShelter(null);
-        employeeRepository.save(employee);
-        promotionNotification(employee);
     }
 
     private void handleNewEmployee(AddEmployeeRequest request, Shelter shelter) throws Exception {
@@ -123,9 +122,7 @@ public class ManagerService {
         employee.setEmail(request.getEmail());
         employee.setVerified(false);
         employee.setManager(request.isManager());
-        if(!request.isManager()){
-            employee.setShelter(shelter);
-        }
+        employee.setShelter(shelter);
         employeeRepository.save(employee);
         newEmployeeVerification(employee);
     }
@@ -171,6 +168,3 @@ public class ManagerService {
         }
     }
 }
-
-
-

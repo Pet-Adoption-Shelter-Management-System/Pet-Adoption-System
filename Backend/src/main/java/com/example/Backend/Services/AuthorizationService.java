@@ -55,13 +55,6 @@ public class AuthorizationService {
                 adopter.setFirstName(request.getFirstName());
                 adopter.setLastName(request.getLastName());
                 adopter.setVerified(false);
-//                adopter = (Adopter) Adopter.builder()
-//                        .email(request.getEmail())
-//                        .password(passwordEncoder.encode(request.getPassword()))
-//                        .firstName(request.getFirstName())
-//                        .lastName(request.getLastName())
-//                        .isVerified(false)
-//                        .build();
             }
             adopterRepository.save(adopter);
             System.out.println("before send");

@@ -1,0 +1,30 @@
+.productFormField, 
+.vaccinationsContainer {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  font-weight: 500;
+  background-color: white;
+  height: fit-content;
+  z-index: 400;
+}
+
+
+
+
+.vaccinationsContainer{
+    margin-left: 8px;
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.petVaccination{
+    display: flex;
+    flex-direction: row;
+    width: 30%;
+    margin-bottom: 15px;
+}
