@@ -23,10 +23,6 @@ const PetsPage = () => {
 
   const fetchUserInfo = async () => {
     try {
-      //   let homeRequest: HomeRequest = {
-      //     role: role,
-      //     shelterName: shelterName,
-      //   };
       let url: string = `http://localhost:9080/api/petPage/getUserInfo/${role}`;
       const response = await axios(url, {
         method: "GET",
@@ -38,7 +34,7 @@ const PetsPage = () => {
         "🚀 ~ file: PetsPage.tsx:37 ~ fetchUserInfo ~ response:",
         response.data
       );
-
+      console.log(userToken)
       setUserInfo(response.data);
     } catch (error) {
       console.error("Access denied !");
@@ -47,6 +43,13 @@ const PetsPage = () => {
 
   useEffect(() => {
     if (isMounted.current) {
+      console.log(
+        "🚀 ~ file: PetsPage.tsx:21 ~ PetsPage ~ userToken, from, shelterName, role:",
+        userToken,
+        from,
+        shelterName,
+        role
+      );
       fetchUserInfo();
       isMounted.current = false;
     }
@@ -55,7 +58,7 @@ const PetsPage = () => {
   const getPets = async () => {
     try {
       // TODO add the authorization header
-      let url: string = "http://localhost:9080/api/allPets";
+      let url: string = `http://localhost:9080/api/allPets`;
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -69,16 +72,77 @@ const PetsPage = () => {
       );
       return pets;
     } catch (error) {
-      alert(error);
-      const pets: PetDto[] = [];
+      // Handle errors here
+      if (axios.isAxiosError(error)) {
+        // This type assertion tells TypeScript that error is an AxiosError
+        const axiosError = error as import("axios").AxiosError;
+        if (axiosError.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error("Response data:", axiosError.response.data);
+          console.error("Response status:", axiosError.response.status);
+          alert("Access denied !");
+        } else if (axiosError.request) {
+          // The request was made but no response was received
+          console.error("No response received:", axiosError.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error("Error:", axiosError.message);
+        }
+      } else {
+        // Handle non-Axios errors
+        console.error("Non-Axios error:", error);
+      }
+      let pets: PetDto[] = [];
       return pets;
     }
   };
 
   const getShelterPets = async () => {
-    let response: PetDto[] = [];
-    return response;
-    // TODO
+    try {
+      // TODO add the authorization header
+      console.log("In get shelter pets");
+      console.log("🚀 ~ file: PetsPage.tsx:107 ~ getShelterPets ~ shelterName:", shelterName)
+      
+
+      let url: string = `http://localhost:9080/api/shelter/allPets?shelterName=${shelterName}`;
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      }); // Replace with your backend URL
+      const pets: PetDto[] = response.data;
+      console.log(
+        "🚀 ~ file: PetsPage.tsx:50 ~ getPets ~ response.data:",
+        response.data
+      );
+      return pets;
+    } catch (error) {
+      // Handle errors here
+      if (axios.isAxiosError(error)) {
+        // This type assertion tells TypeScript that error is an AxiosError
+        const axiosError = error as import("axios").AxiosError;
+        if (axiosError.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error("Response data:", axiosError.response.data);
+          console.error("Response status:", axiosError.response.status);
+          alert("Access denied !");
+        } else if (axiosError.request) {
+          // The request was made but no response was received
+          console.error("No response received:", axiosError.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error("Error:", axiosError.message);
+        }
+      } else {
+        // Handle non-Axios errors
+        console.error("Non-Axios error:", error);
+      }
+      let pets: PetDto[] = [];
+      return pets;
+    }
   };
 
   return (
@@ -92,14 +156,15 @@ const PetsPage = () => {
         isPets={true}
       />
 
-       <PetsList
+      <PetsList
         firstName={userInfo?.firstName || "Mahmoud"}
         lastName={userInfo?.lastName || "Attia"}
         userToken={userToken}
         role={role}
-        getPets={getPets} //TODO chnage it according to the role
+        shelterName={role === "adopter" ? "Pets Adoption" : shelterName}
+        getPets={ role === "adopter" ? getPets : getShelterPets} //TODO chnage it according to the role
         passedPets={[]} // TODO
-      /> 
+      />
     </>
   );
 };

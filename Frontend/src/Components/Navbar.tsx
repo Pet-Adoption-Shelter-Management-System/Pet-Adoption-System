@@ -96,13 +96,11 @@ const Navbar: React.FC<NavbarProps> = ({
 
   const handlePetsClick = () => {
     navigate("/PetsPage", {
-      state: {
+      state: {        
+        userToken: token,
+        from: "Details",
         shelterName: shelterName,
-        firstName: firstName,
-        lastName: lastName,
-        token: token,
-        role: role,
-        pets: [],
+        role:role
       },
     });
   };
@@ -375,7 +373,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
         <nav
           className="downnav navbar navbar-expand-lg"
-          style={{ padding: "0px", backgroundColor: "#ddd" }}
+          style={{ padding: "0px", backgroundColor: "white" }}
         >
           <div className="container-fluid">
             <button className="navbar-brand d-block d-sm-block d-md-none d-lg-none">

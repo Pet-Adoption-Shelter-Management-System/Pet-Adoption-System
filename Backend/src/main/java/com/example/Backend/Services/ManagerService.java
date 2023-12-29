@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -95,7 +94,7 @@ public class ManagerService {
                 handleFoundEmployee(optionalEmployee.get(), request);
             else
                 handleNewEmployee(request, optionalShelter.get());
-        }else
+        } else
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter Not Found");
     }
 
@@ -105,12 +104,12 @@ public class ManagerService {
         if (!request.isManager())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This email already used by a staff member!");
         //promote unverified staff member to be a manager
-        if (!employee.isVerified()){
+        if (!employee.isVerified()) {
             employee.setManager(true);
             employee.setShelter(null);
             employeeRepository.save(employee);
             newEmployeeVerification(employee);
-        }else{
+        } else {
             //promote a verified staff member to be a manager
             employee.setManager(true);
             employee.setShelter(null);
@@ -124,7 +123,7 @@ public class ManagerService {
         employee.setEmail(request.getEmail());
         employee.setVerified(false);
         employee.setManager(request.isManager());
-        if(!request.isManager()){
+        if (!request.isManager()) {
             employee.setShelter(shelter);
         }
         employeeRepository.save(employee);

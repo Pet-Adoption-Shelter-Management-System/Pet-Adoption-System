@@ -12,7 +12,7 @@ interface Props {
   lastName: string;
   role: string;
   userToken: string;
-  shelterName?: string;
+  shelterName: string;
   getPets: () => Promise<PetDto[]>;
   //   getSortedProducts: (sortBy: any, sortOrder: any) => Promise<Pet[]>;
   //   getFilteredProducts: (filter: FilterProductDto) => Promise<Product[]>;
@@ -31,7 +31,7 @@ const PetsList = ({
 
   // Pageination
   const [currentPage, setCurrentPage] = useState(1);
-  const [petsPerPage, setPetsPerPage] = useState(15);
+  const [petsPerPage, setPetsPerPage] = useState(10);
   const [fadeAnimation, setFadeAnimation] = useState("");
 
   // Edit and Add
@@ -95,17 +95,36 @@ const PetsList = ({
 
   // TODO go to the PetDetails
   const handlePetClicked = (pet: PetDto) => {
-      const id = pet.id;
-      navigate("/petDetails", {
-        state: {
-          firstName: firstName,
-          lastName: lastName,
-          role:role,
-          petID: id,
-          token: userToken,
-          shelterName: shelterName
-        },
-      });
+    const id = pet.id;
+    console.log("RORUUUUUUUUUUUUUUUTTTTTTTTTTTTTTT")
+    console.log(
+      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ shelterName:",
+      shelterName
+    );
+    console.log(
+      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ userToken:",
+      userToken
+    );
+    console.log("🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ id:", id);
+    console.log("🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ role:", role);
+    console.log(
+      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ lastName:",
+      lastName
+    );
+    console.log(
+      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ firstName:",
+      firstName
+    );
+    navigate("/petDetails", {
+      state: {
+        firstName: firstName,
+        lastName: lastName,
+        role: role,
+        petID: id,
+        token: userToken,
+        shelterName: shelterName,
+      },
+    });
   };
 
   //TODO sorting
@@ -125,25 +144,24 @@ const PetsList = ({
     //           new Map(prevStatus).set(product.id, false)
     //         );
     //       }
-  
-  //     const updatedProducts = await Promise.all(
-  //       products.map(async (product) => {
-  //         try {
-  //           const dynamicImportedImage = await import(
-  //             `../assets${product.imageLink}`
-  //           );
-  //           return { ...product, imageLink: dynamicImportedImage.default };
-  //         } catch (error) {
-  //           console.error("Error loading image:", error);
-  //           return product; // Return original product if image loading fails
-  //         }
-  //       })
-  //     );
-  //     setProducts(updatedProducts);
-  //   };
-  }
 
-  
+    //     const updatedProducts = await Promise.all(
+    //       products.map(async (product) => {
+    //         try {
+    //           const dynamicImportedImage = await import(
+    //             `../assets${product.imageLink}`
+    //           );
+    //           return { ...product, imageLink: dynamicImportedImage.default };
+    //         } catch (error) {
+    //           console.error("Error loading image:", error);
+    //           return product; // Return original product if image loading fails
+    //         }
+    //       })
+    //     );
+    //     setProducts(updatedProducts);
+    //   };
+  };
+
   //TODO filtering
   const handleFilterButtonClick = async () => {
     console.log(filterParams);
@@ -160,23 +178,23 @@ const PetsList = ({
     //           new Map(prevStatus).set(product.id, false)
     //         );
     //       }
-  
-  //     const updatedProducts = await Promise.all(
-  //       products.map(async (product) => {
-  //         try {
-  //           const dynamicImportedImage = await import(
-  //             `../assets${product.imageLink}`
-  //           );
-  //           return { ...product, imageLink: dynamicImportedImage.default };
-  //         } catch (error) {
-  //           console.error("Error loading image:", error);
-  //           return product; // Return original product if image loading fails
-  //         }
-  //       })
-  //     );
-  //     setProducts(updatedProducts);
-  //   };
-  }
+
+    //     const updatedProducts = await Promise.all(
+    //       products.map(async (product) => {
+    //         try {
+    //           const dynamicImportedImage = await import(
+    //             `../assets${product.imageLink}`
+    //           );
+    //           return { ...product, imageLink: dynamicImportedImage.default };
+    //         } catch (error) {
+    //           console.error("Error loading image:", error);
+    //           return product; // Return original product if image loading fails
+    //         }
+    //       })
+    //     );
+    //     setProducts(updatedProducts);
+    //   };
+  };
 
   const toggleSortModal = () => {
     setShowSortModal((prev) => !prev);
@@ -185,8 +203,6 @@ const PetsList = ({
   const toggleFilterModal = () => {
     setShowFilterModal((prev) => !prev);
   };
-
-
 
   // Edit
   const handleEditPet = (pet: PetDto) => {
@@ -204,7 +220,8 @@ const PetsList = ({
       breed: pet.breed,
       species: pet.species,
       isSpayed: pet.spayed ? "true" : "false",
-      shelterName: pet.shelterName,
+      available: pet.available ? "true" : "false",
+      shelterName: pet.shelter.name,
       petVaccinations: pet.petVaccinations,
     });
     setEditPet(true);
@@ -301,7 +318,7 @@ const PetsList = ({
                   </tr>
                   <tr>
                     <td>Shelter</td>
-                    <td>{pet.shelterName}</td>
+                    <td>{pet.shelter.name}</td>
                   </tr>
                 </tbody>
               </table>
@@ -322,15 +339,22 @@ const PetsList = ({
               {role === "adopter" && (
                 <>
                   <button
-                    className="btn btn-primary"
+                    className={`btn btn-${
+                      pet.available ? "primary" : "danger"
+                    }`}
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleAppliyClicled(pet);
                     }}
                     style={{ width: "100%", marginTop: "15px" }}
+                    disabled={!pet.available}
                   >
-                    <strong>Apply For Adoption</strong>
+                    <strong>
+                      {pet.available
+                        ? "Apply For Adoption"
+                        : "Not Available for doption"}
+                    </strong>
                   </button>
                 </>
               )}
@@ -448,8 +472,13 @@ const PetsList = ({
                 </select>
               </label>
             </div>
-            <div className="sort-order" style={{display:"flex", alignItems:"center"}}>
-              <label className="sort-label" style={{marginRight:"10px"}}>Filter By</label>
+            <div
+              className="sort-order"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <label className="sort-label" style={{ marginRight: "10px" }}>
+                Filter By
+              </label>
               <input
                 type="text"
                 name="filterCriteria"

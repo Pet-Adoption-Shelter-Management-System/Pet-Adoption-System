@@ -34,6 +34,18 @@ public class PetsListingService {
         }).collect(Collectors.toList());
     }
 
+    public List<PetDto> getAllPets(String shelterName) {
+        return petRepository.findByShelterName(shelterName).stream().map(pet -> {
+            try {
+                PetDto dto = pet.toDto();
+                dto.setDocs(getPetDocs(pet));
+                return dto;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
+    }
+
     List<DocumentDto> getPetDocs(Pet pet) throws IOException {
         List<Document> docs = pet.getDocuments();
         for (Document doc : docs) {

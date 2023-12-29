@@ -1,7 +1,6 @@
 package com.example.Backend.Controllers;
-import com.example.Backend.DTO.HomeRequest;
 import com.example.Backend.DTO.UserInfo;
-import com.example.Backend.Services.Utils;
+import com.example.Backend.Middleware.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

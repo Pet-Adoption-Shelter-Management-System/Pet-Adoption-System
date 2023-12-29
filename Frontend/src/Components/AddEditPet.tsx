@@ -20,6 +20,7 @@ export interface EditedPet {
   species: string;
   isSpayed: string; // Use null if the property can be nullable
   shelterName: string;
+  available: string;
   petVaccinations: string[];
 }
 
@@ -49,6 +50,7 @@ const AddEditPet = ({
     species: "",
     isSpayed: "",
     shelterName: "",
+    available: "",
     petVaccinations: [],
   });
   const navigate = useNavigate();
@@ -69,6 +71,7 @@ const AddEditPet = ({
         healthStatus: pet.healthStatus,
         age: pet.age,
         behaviour: pet.behaviour,
+        available: pet.available,
         breed: pet.breed,
         species: pet.species,
         isSpayed: pet.isSpayed,
@@ -81,6 +84,7 @@ const AddEditPet = ({
         name: "",
         isMale: "Male",
         isHouseTrained: "false",
+        available: "true",
         description: "",
         healthStatus: "",
         age: "",
@@ -182,6 +186,7 @@ const AddEditPet = ({
 
   const handleEditRequest = async () => {
     try {
+      console.log(convertToDto());
       let url: string = `http://localhost:9080/api/pet/edit?petDto=${encodeURIComponent(
         JSON.stringify(convertToDto())
       )}`;
@@ -191,7 +196,9 @@ const AddEditPet = ({
           formData.append("docs", selectedFiles[i]);
         }
       } else {
-        formData.append("docs", "");
+        const dummyBlob = new Blob([""], { type: "application/octet-stream" });
+        const dummyFile = new File([dummyBlob], "");
+        formData.append("docs", dummyFile);
       }
 
       const response = await axios.post(url, formData, {
@@ -203,7 +210,7 @@ const AddEditPet = ({
 
       // Here means that the response is Ok and the product is added successfully
       setResponseData(response.data);
-      onCancel();
+      // onCancel();
     } catch (error) {
       // Handle errors here
       if (axios.isAxiosError(error)) {
@@ -248,7 +255,7 @@ const AddEditPet = ({
 
       // Here means that the response is Ok and the product is added successfully
       setResponseData(response.data);
-      onCancel();
+      // onCancel();
     } catch (error) {
       console.error(error);
       // Handle errors here
@@ -274,8 +281,16 @@ const AddEditPet = ({
   };
 
   const convertToDto = () => {
+    let shelter: ShelterDto = {
+      id: 123,
+      name: formData.shelterName,
+      location: "",
+      contactPhone: "",
+      contactEmail: "",
+    };
+
     let petDto: PetDto = {
-      id: 0,
+      id: Number(formData.id),
       name: formData.name,
       male: formData.isMale === "Male",
       houseTrained: formData.isHouseTrained === "true",
@@ -286,7 +301,8 @@ const AddEditPet = ({
       breed: formData.breed,
       species: formData.species,
       spayed: formData.isSpayed === "true",
-      shelterName: formData.shelterName,
+      shelter: shelter,
+      available: formData.available === "true",
       petVaccinations: finalVaccines,
       docs: [],
     };
@@ -322,6 +338,13 @@ const AddEditPet = ({
     }));
   };
 
+  const handleAvailableChnage = () => {
+    setFormData((prevState) => ({
+      ...prevState,
+      available: prevState.available === "true" ? "false" : "true",
+    }));
+  };
+
   // Function to delete a vaccine by index
   const deleteVaccine = (indexToDelete: number) => {
     setFormData((prevState) => {
@@ -337,6 +360,7 @@ const AddEditPet = ({
   const onCancel = () => {
     setShow(false);
     resetButton();
+    resetResponseData();
   };
 
   function handleTextAreaChange(e: ChangeEvent<HTMLTextAreaElement>): void {
@@ -350,6 +374,7 @@ const AddEditPet = ({
   const resetResponseData = () => {
     setResponseData("");
   };
+  const dummyFun = () => {};
 
   return (
     <>
@@ -359,6 +384,7 @@ const AddEditPet = ({
           <>
             <GenericAlertModal
               onClose={resetResponseData}
+              resetResponseData={dummyFun}
               show={true}
               body={
                 <>
@@ -385,6 +411,7 @@ const AddEditPet = ({
           <>
             <GenericAlertModal
               onClose={resetResponseData}
+              resetResponseData={dummyFun}
               show={true}
               body={
                 <>
@@ -582,7 +609,7 @@ const AddEditPet = ({
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginLeft: "8px",
-                width: "50%",
+                width: "80%",
               }}
             >
               <div
@@ -630,6 +657,30 @@ const AddEditPet = ({
                   style={{ marginLeft: "10px" }}
                 >
                   House trained
+                </label>
+              </div>
+
+              <div
+                className="productFormField"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={formData.available === "true"}
+                  id="checkbox3"
+                  style={{ margin: "0px" }}
+                  onChange={handleAvailableChnage}
+                />
+                <label
+                  className="form-check-label form-label"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Available
                 </label>
               </div>
             </div>

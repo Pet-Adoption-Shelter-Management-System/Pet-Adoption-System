@@ -1,4 +1,4 @@
-package com.example.Backend.Services;
+package com.example.Backend.Middleware;
 import com.example.Backend.DTO.UserInfo;
 import com.example.Backend.Model.Adopter;
 import com.example.Backend.Model.Employee;
@@ -18,7 +18,6 @@ import java.util.Optional;
 public class Utils {
     private final JwtService jwtService;
     private final AdopterRepository adopterRepository;
-    private final ManagerRepository managerRepository;
     private final EmployeeRepository employeeRepository;
 
     @Transactional

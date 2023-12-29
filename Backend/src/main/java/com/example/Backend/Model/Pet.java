@@ -51,7 +51,10 @@ public class Pet {
     private String species;
 
     @Column(name = "isSpayed", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isSpayed;
+    private boolean isSpayed;
+
+    @Column(name = "isAvailable", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean isAvailable;
 
     @ManyToOne
     @JoinColumn(name = "shelterID", nullable = false)
@@ -77,11 +80,13 @@ public class Pet {
                 .behaviour(this.getBehaviour())
                 .breed(this.getBreed())
                 .species(this.getSpecies())
-                .spayed(this.getIsSpayed())
-                .shelterName(this.getShelter().getName())
+                .spayed(this.isSpayed())
+                .available(this.isAvailable())
+                .shelter(this.getShelter().toDto())
                 .petVaccinations(this.getVaccinations())
                 .build();
     }
+
     public List<String> getVaccinations() {
         return this.getPetVaccinations().stream()
                 .map(PetVaccination::getVaccination).collect(Collectors.toList());
