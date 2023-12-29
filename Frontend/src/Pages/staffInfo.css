@@ -1,0 +1,9 @@
+.custom-table-header {
+    background-color:#979899;
+    color: #fff; /* Set text color to ensure visibility */
+  }
+  
+  .custom-table-body {
+    background-color: #bfbfbf;
+  }
+  

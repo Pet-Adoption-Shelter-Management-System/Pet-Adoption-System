@@ -1,9 +1,6 @@
 package com.example.Backend.Services;
 
-import com.example.Backend.DTO.AddEmployeeRequest;
-import com.example.Backend.DTO.CreateShelterRequest;
-import com.example.Backend.DTO.EmployeeDetails;
-import com.example.Backend.DTO.UpdateShelterRequest;
+import com.example.Backend.DTO.*;
 import com.example.Backend.Model.Adopter;
 import com.example.Backend.Model.Employee;
 import com.example.Backend.Model.Shelter;
@@ -55,12 +52,31 @@ public class ManagerService {
         }
     }
 
+    public ShelterDto getShelter(String shelterName) {
+        Optional<Shelter> optionalShelter = shelterRepository.findByName(shelterName);
+        if (optionalShelter.isPresent()) {
+            Shelter shelter = optionalShelter.get();
+            return ShelterDto.builder()
+                    .name(shelter.getName())
+                    .location(shelter.getLocation())
+                    .contactEmail(shelter.getContactEmail())
+                    .contactPhone(shelter.getContactPhone())
+                    .build();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter Not Found");
+        }
+    }
+
     public void editShelter(String token, UpdateShelterRequest request) {
         String email = jwtService.extractUsername(token);
         verifyManager(email);
-        Optional<Shelter> optionalShelter = shelterRepository.findByName(request.getShelterName());
+        Optional<Shelter> optionalShelter = shelterRepository.findByName(request.getOldName());
         if (optionalShelter.isPresent()) {
+            if(shelterRepository.findByName(request.getShelterName()).isPresent() && !request.getShelterName().equals(request.getOldName())){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "The new shelter name is already used by another shelter! Please enter a unique name");
+            }
             Shelter shelter = optionalShelter.get();
+            shelter.setName(request.getShelterName());
             shelter.setLocation(request.getAddress());
             shelter.setContactEmail(request.getContactEmail());
             shelter.setContactPhone(request.getContactPhone());
@@ -75,7 +91,7 @@ public class ManagerService {
         verifyManager(email);
         Optional<Shelter> optionalShelter = shelterRepository.findByName(shelterName);
         if (optionalShelter.isPresent())
-            return shelterRepository.getAllEmployees(optionalShelter.get().getId());
+            return shelterRepository.getNonManagerEmployees(optionalShelter.get().getId());
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shelter Not Found");
     }
@@ -106,13 +122,11 @@ public class ManagerService {
         //promote unverified staff member to be a manager
         if (!employee.isVerified()) {
             employee.setManager(true);
-            employee.setShelter(null);
             employeeRepository.save(employee);
             newEmployeeVerification(employee);
         } else {
             //promote a verified staff member to be a manager
             employee.setManager(true);
-            employee.setShelter(null);
             employeeRepository.save(employee);
             promotionNotification(employee);
         }
@@ -123,9 +137,7 @@ public class ManagerService {
         employee.setEmail(request.getEmail());
         employee.setVerified(false);
         employee.setManager(request.isManager());
-        if (!request.isManager()) {
-            employee.setShelter(shelter);
-        }
+        employee.setShelter(shelter);
         employeeRepository.save(employee);
         newEmployeeVerification(employee);
     }

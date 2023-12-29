@@ -24,7 +24,7 @@ const StaffSignUP = () => {
   return (
     <Form
       isLogin={false}
-      isStaff={true}
+      isEmployeeSignup={true}
       staffEmail={staffEmail}
       getStaffSignUpCredentials={getStaffSignUpCredentials}
     />

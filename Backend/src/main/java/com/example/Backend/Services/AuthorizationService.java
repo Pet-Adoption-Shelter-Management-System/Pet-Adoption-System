@@ -98,14 +98,13 @@ public class AuthorizationService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found with the specified role");
     }
 
-    private AuthResponse employeeLogin(Employee employee, LoginRequest request) {
-        if (employee.isVerified()) {
-            if (employee.isManager() && request.getRole().equals("manager")) {
-                System.out.println("he is a manager");
+
+    private AuthResponse employeeLogin(Employee employee, LoginRequest request){
+        if(employee.isVerified()){
+            if(employee.isManager() && request.getRole().equals("manager")) {
                 Optional<Shelter> optionalShelter = shelterRepository.findByName(request.getShelterName());
                 if (optionalShelter.isPresent()) {
                     var jwtToken = jwtService.generateToken(employee);
-                    System.out.println("shelter found");
                     return AuthResponse.builder()
                             .token(jwtToken)
                             .shelterName(optionalShelter.get().getName())

@@ -2,6 +2,7 @@ package com.example.Backend.Controllers;
 
 import com.example.Backend.DTO.CreateShelterRequest;
 import com.example.Backend.DTO.EmployeeDetails;
+import com.example.Backend.DTO.ShelterDto;
 import com.example.Backend.DTO.UpdateShelterRequest;
 import com.example.Backend.Services.ManagerService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/shelter")
@@ -32,8 +34,29 @@ public class ShelterController {
         }
     }
 
+    @GetMapping("/getShelter/{shelterName}")
+    public ResponseEntity<ShelterDto> getShelter(@RequestHeader("Authorization") String authorizationHeader,
+                                                 @PathVariable String shelterName) {
+        try {
+            System.out.println("let's get token");
+            extractToken(authorizationHeader);
+            System.out.println("name:" + shelterName);
+            return ResponseEntity.ok(shelterServices.getShelter(shelterName));
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ShelterDto.builder().name(e.getMessage()).build());
+        } catch (ResponseStatusException e) {
+            //status code will be not found in case the manager not found or the shelter not found
+            //status code will be Forbidden if the employee is not a manager
+            return ResponseEntity.status(e.getStatusCode()).body(ShelterDto.builder().name(e.getReason()).build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ShelterDto.builder().name(e.getMessage()).build());
+        }
+    }
+
+
     @PutMapping("/update")
-    public ResponseEntity<String> update(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UpdateShelterRequest request) {
+    public ResponseEntity<String> update(@RequestHeader("Authorization") String authorizationHeader,
+                                         @RequestBody UpdateShelterRequest request) {
         try {
             String token = extractToken(authorizationHeader);
             shelterServices.editShelter(token, request);
@@ -48,7 +71,8 @@ public class ShelterController {
     }
 
     @GetMapping("/getEmployees/{shelterName}")
-    public ResponseEntity<List<EmployeeDetails>> getEmployees(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String shelterName) {
+    public ResponseEntity<List<EmployeeDetails>> getEmployees(@RequestHeader("Authorization") String authorizationHeader,
+                                                              @PathVariable String shelterName) {
         try {
             String token = extractToken(authorizationHeader);
             return ResponseEntity.ok(shelterServices.getAllEmployees(token, shelterName));

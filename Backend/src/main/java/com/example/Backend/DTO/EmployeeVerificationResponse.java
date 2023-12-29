@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateShelterRequest {
-    private String oldName;
+public class EmployeeVerificationResponse {
+    private String role;
     private String shelterName;
-    private String address;
-    private String contactPhone;
-    private String contactEmail;
 }
