@@ -15,9 +15,13 @@ public interface ShelterRepository extends JpaRepository<Shelter, Long> {
 
     Optional<Shelter> findByName(String name);
   
+//    @Query("SELECT new com.example.Backend.DTO.EmployeeDetails(e.email, e.firstName, e.lastName, e.contactPhone, e.address, e.isVerified) " +
+//            "FROM Shelter s JOIN s.employees e WHERE s.id = :shelterId")
+//    List<EmployeeDetails> getAllEmployees(Long shelterId);
+
     @Query("SELECT new com.example.Backend.DTO.EmployeeDetails(e.email, e.firstName, e.lastName, e.contactPhone, e.address, e.isVerified) " +
-            "FROM Shelter s JOIN s.employees e WHERE s.id = :shelterId")
-    List<EmployeeDetails> getAllEmployees(Long shelterId);
+            "FROM Shelter s JOIN s.employees e WHERE s.id = :shelterId AND e.isManager = false")
+    List<EmployeeDetails> getNonManagerEmployees(Long shelterId);
 
     // Add this method to get the first shelter by ID in ascending order
     Optional<Shelter> findFirstByOrderByIdAsc();
