@@ -44,4 +44,22 @@ public class ApplicationService {
                 .build();
         applicationRepo.save(application);
     }
+
+    public void manageApp(long appId, String status) {
+        Optional<Application> optionalApp = applicationRepo.findById(appId);
+        if (optionalApp.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Application not found");
+        }
+        Application application = optionalApp.get();
+        if (!status.equals("Approved") && !status.equals("Rejected") && !status.equals("Pending")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status");
+        }
+        application.setStatus(status);
+        applicationRepo.save(application);
+        if (status.equals("Rejected")) {
+            Pet pet = application.getPet();
+            pet.setAvailable(true);
+            petRepo.save(pet);
+        }
+    }
 }
