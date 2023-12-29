@@ -40,4 +40,27 @@ public class ApplicationController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
     }
+
+    @PostMapping("/manage")
+    public ResponseEntity<String> manageApp(
+            @RequestParam long appId,
+            @RequestParam String status,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+    ) {
+        if (permissions.checkToken(authorizationHeader)) {
+            try {
+                String token = permissions.extractToken(authorizationHeader);
+                if (!permissions.checkStaff(token)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+                }
+                appService.manageApp(appId, status);
+                return ResponseEntity.status(HttpStatus.OK).body("Application managed Successfully");
+            } catch (ResponseStatusException e) {
+                return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden access");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+    }
 }
