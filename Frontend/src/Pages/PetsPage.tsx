@@ -21,39 +21,39 @@ const PetsPage = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const isMounted = useRef<boolean>(true);
 
-  // const fetchUserInfo = async () => {
-  //   try {
-  //     let url: string = `http://localhost:9080/api/petPage/getUserInfo/${role}`;
-  //     const response = await axios(url, {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${userToken}`,
-  //       },
-  //     });
-  //     console.log(
-  //       "🚀 ~ file: PetsPage.tsx:37 ~ fetchUserInfo ~ response:",
-  //       response.data
-  //     );
-  //     console.log(userToken);
-  //     setUserInfo(response.data);
-  //   } catch (error) {
-  //     console.error("Access denied !");
-  //   }
-  // };
+  const fetchUserInfo = async () => {
+    try {
+      let url: string = `http://localhost:9080/api/petPage/getUserInfo/${role}`;
+      const response = await axios(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log(
+        "🚀 ~ file: PetsPage.tsx:37 ~ fetchUserInfo ~ response:",
+        response.data
+      );
+      console.log(userToken);
+      setUserInfo(response.data);
+    } catch (error) {
+      console.error("Access denied !");
+    }
+  };
 
-  // useEffect(() => {
-  //   if (isMounted.current) {
-  //     console.log(
-  //       "🚀 ~ file: PetsPage.tsx:21 ~ PetsPage ~ userToken, from, shelterName, role:",
-  //       userToken,
-  //       from,
-  //       shelterName,
-  //       role
-  //     );
-  //     fetchUserInfo();
-  //     isMounted.current = false;
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (isMounted.current) {
+      console.log(
+        "🚀 ~ file: PetsPage.tsx:21 ~ PetsPage ~ userToken, from, shelterName, role:",
+        userToken,
+        from,
+        shelterName,
+        role
+      );
+      fetchUserInfo();
+      isMounted.current = false;
+    }
+  }, []);
 
   const getPets = async () => {
     try {

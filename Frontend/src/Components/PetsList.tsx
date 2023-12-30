@@ -49,10 +49,13 @@ const PetsList = ({
   const [editedPet, setEditedPet] = useState<EditedPet>();
 
   // Sort and Filter
-  const [sortParams, setSortParams] = useState({ sortBy: "", sortOrder: true });
+  const [sortParams, setSortParams] = useState({
+    sortBy: "id",
+    sortOrder: true,
+  });
   const [filterParams, setFilterParams] = useState({
+    filterCriteria: "name",
     filterBy: "",
-    filterCriteria: "",
   });
 
   const [showSortModal, setShowSortModal] = useState(false);
@@ -81,7 +84,6 @@ const PetsList = ({
 
   // Get the pets once the component is mounted
   useEffect(() => {
-    
     const fetchData = async () => {
       const petss = await getPets();
       console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
@@ -156,73 +158,74 @@ const PetsList = ({
     });
   };
 
+  const getSortedPets = async (sortBy: any, sortOrder: any) => {
+    console.log("In get sorted products");
+    let url = "";
+    if (role === "adopter")
+      url = `http://localhost:9080/api/sort/customerSortEntity/pet/${sortBy}/${sortOrder}`;
+    else
+      url = `http://localhost:9080/api/sort/employeeSortEntity/pet/${sortBy}/${sortOrder}/${shelterName}`;
+
+    try {
+      console.log("sort url:", url);
+      const response = await axios(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log("sorted pets:" + response.data);
+      const pets: PetDto[] = response.data;
+      return pets;
+    } catch (error) {
+      console.log("Error:", error);
+      const pets: PetDto[] = [];
+      return pets;
+    }
+  };
+
   //TODO sorting
   const handleSortButtonClick = async () => {
     console.log(sortParams);
+    const pets = await getSortedPets(sortParams.sortBy, sortParams.sortOrder);
+    setPets(pets);
+  };
 
-    //     const products = await getSortedProducts(sortParams.sortBy, sortParams.sortOrder);
-    //     // Set wishlist status
-    //     for (let i = 0; i < products.length; i++) {
-    //       const product = products[i];
-    //       if (product.inWishlist) {
-    //         setWishlistStatus((prevStatus) =>
-    //           new Map(prevStatus).set(product.id, true)
-    //         );
-    //       } else {
-    //         setWishlistStatus((prevStatus) =>
-    //           new Map(prevStatus).set(product.id, false)
-    //         );
-    //       }
-
-    //     const updatedProducts = await Promise.all(
-    //       products.map(async (product) => {
-    //         try {
-    //           const dynamicImportedImage = await import(
-    //             `../assets${product.imageLink}`
-    //           );
-    //           return { ...product, imageLink: dynamicImportedImage.default };
-    //         } catch (error) {
-    //           console.error("Error loading image:", error);
-    //           return product; // Return original product if image loading fails
-    //         }
-    //       })
-    //     );
-    //     setProducts(updatedProducts);
-    //   };
+  const getFilterPets = async (criteria: any, toMeet: any) => {
+    // console.log ("key:  ", searchKey)
+    let url: string = "";
+    // let entity: string = "pet";
+    // let criteria: string = "search";
+    if (role === "adopter") {
+      url = `http://localhost:9080/api/filter/customerFilterEntity/pet/${criteria}/${toMeet}`;
+    } else {
+      url = `http://localhost:9080/api/filter/employeeFilterEntity/pet/${criteria}/${toMeet}/${shelterName}`;
+    }
+    try {
+      const response = await axios(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log(response.data);
+      const pets: PetDto[] = response.data;
+      return pets;
+    } catch (error) {
+      console.log("Error:", error);
+      const pets: PetDto[] = [];
+      return pets;
+    }
   };
 
   //TODO filtering
   const handleFilterButtonClick = async () => {
     console.log(filterParams);
-    //     const products = await getSortedProducts(sortParams.sortBy, sortParams.sortOrder);
-    //     // Set wishlist status
-    //     for (let i = 0; i < products.length; i++) {
-    //       const product = products[i];
-    //       if (product.inWishlist) {
-    //         setWishlistStatus((prevStatus) =>
-    //           new Map(prevStatus).set(product.id, true)
-    //         );
-    //       } else {
-    //         setWishlistStatus((prevStatus) =>
-    //           new Map(prevStatus).set(product.id, false)
-    //         );
-    //       }
-
-    //     const updatedProducts = await Promise.all(
-    //       products.map(async (product) => {
-    //         try {
-    //           const dynamicImportedImage = await import(
-    //             `../assets${product.imageLink}`
-    //           );
-    //           return { ...product, imageLink: dynamicImportedImage.default };
-    //         } catch (error) {
-    //           console.error("Error loading image:", error);
-    //           return product; // Return original product if image loading fails
-    //         }
-    //       })
-    //     );
-    //     setProducts(updatedProducts);
-    //   };
+    const pets = await getFilterPets(
+      filterParams.filterCriteria,
+      filterParams.filterBy
+    );
+    setPets(pets);
   };
 
   const toggleSortModal = () => {
@@ -298,6 +301,13 @@ const PetsList = ({
         console.error("Non-Axios error:", error);
       }
     }
+  };
+
+  const formatAge = (age: number): string => {
+    const years = Math.floor(age);
+    const months = Math.floor((age - years) * 12);
+    if(years === 0) return `${months} months`
+    else return `${years} years ${months} months`;
   };
 
   const resetApplicationResponse = () => {
@@ -413,12 +423,12 @@ const PetsList = ({
                   <tr>
                     <td style={{ backgroundColor: "white" }}>Gender</td>
                     <td style={{ backgroundColor: "white" }}>
-                      {pet.male ? "Male" : "Felmale"}
+                      {pet.male ? "Male" : "Female"}
                     </td>
                   </tr>
                   <tr>
                     <td>Age</td>
-                    <td>{pet.age} years</td>
+                    <td>{formatAge(pet.age)}</td>
                   </tr>
                   <tr>
                     <td style={{ backgroundColor: "white" }}>Breed</td>
@@ -494,17 +504,21 @@ const PetsList = ({
                   }
                   value={sortParams.sortBy}
                 >
-                  <option value="">Select Criteria</option>
-                  <option value="productName">Name</option>
-                  <option value="price">Price</option>
-                  <option value="averageRating">Rating</option>
-                  <option value="numberOfReviews">Reviews</option>
-                  <option value="postedDate">Date Added</option>
-                  <option value="productCountAvailable">
-                    Remaining in Stock
-                  </option>
-                  <option value="productSoldCount">Sold Count</option>
-                  <option value="brand">Brand</option>
+                  {/* <option value="">Select Criteria</option> */}
+                  <option value="id">Pet ID</option>
+                  {role === "adopter" && (
+                    <option value="shelterId">Shelter ID</option>
+                  )}
+                  <option value="behaviour">Behaviour</option>
+                  <option value="breed">Breed</option>
+                  <option value="age">Age</option>
+                  <option value="description">Description</option>
+                  <option value="healthStatus">Health Status</option>
+                  <option value="isHouseTrained">is House Trained</option>
+                  <option value="isMale">Is Male</option>
+                  <option value="name">Name</option>
+                  <option value="species">Species</option>
+                  <option value="isSpayed">Is Spayed</option>
                 </select>
               </label>
             </div>
@@ -561,22 +575,28 @@ const PetsList = ({
                   onChange={(e) =>
                     setFilterParams((prev) => ({
                       ...prev,
-                      filterBy: e.target.value,
+                      filterCriteria: e.target.value,
                     }))
                   }
                   value={filterParams.filterCriteria}
                 >
-                  <option value="">Select Criteria</option>
-                  <option value="productName">Name</option>
-                  <option value="price">Price</option>
-                  <option value="averageRating">Rating</option>
-                  <option value="numberOfReviews">Reviews</option>
-                  <option value="postedDate">Date Added</option>
-                  <option value="productCountAvailable">
-                    Remaining in Stock
-                  </option>
-                  <option value="productSoldCount">Sold Count</option>
-                  <option value="brand">Brand</option>
+                  <option value="name">Name</option>
+                  {role === "adopter" && (
+                    <option value="shelterName">Shelter Name</option>
+                  )}
+                  {role === "adopter" && (
+                    <option value="shelterLocation">Shelter Location</option>
+                  )}
+                  <option value="behaviour">Behaviour</option>
+                  <option value="description">Description</option>
+                  <option value="healthStatus">Health Status</option>
+                  <option value="isHouseTrained">is House Trained</option>
+                  <option value="isMale">Is Male</option>
+                  <option value="isSpayed">Is Spayed</option>
+                  <option value="species">Species</option>
+                  <option value="breed">Breed</option>
+                  <option value="age">Age</option>
+                  <option value="vaccination">Vaccination</option>
                 </select>
               </label>
             </div>
@@ -590,11 +610,11 @@ const PetsList = ({
               <input
                 type="text"
                 name="filterCriteria"
-                value={filterParams.filterCriteria}
+                value={filterParams.filterBy}
                 onChange={(e) =>
                   setFilterParams((prev) => ({
                     ...prev,
-                    filterCriteria: e.target.value,
+                    filterBy: e.target.value,
                   }))
                 }
               />
