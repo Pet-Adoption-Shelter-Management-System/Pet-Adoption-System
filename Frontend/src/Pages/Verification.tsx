@@ -41,15 +41,13 @@ const Verification = () => {
             setVerificationStatus("success");
             alert("You've successfully signed up");
             navigate("/PetsPage", {
-              state: { userToken: userTok, from: "Signed-up", shelterName: "adopter", role: "adopter" },
+              state: { userToken: userTok, from: "Signed-up", shelterName: "adopter", role: "adopter", pets:[] },
             });
           } else if (response.status == 400) {
             //means that the user already exists and this is a bad request
             //so we notify him and we'll let him in anyway
             alert("You already exist, so you'll be logged in");
-            navigate("/home", {
-              state: { userToken: userTok, from: "Signed-up", shelterName:"", role:"adopter"},
-            });
+
           } else if (response.status == 404) {
             alert("User not found!");
             navigate("/signup");

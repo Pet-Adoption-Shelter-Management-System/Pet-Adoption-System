@@ -1,5 +1,6 @@
 package com.example.Backend.Controllers;
 
+import com.example.Backend.DTO.PetDto;
 import com.example.Backend.Services.Filter.FilterService;
 
 
@@ -18,23 +19,23 @@ public class FilterController <T extends Comparable<T>> {
     FilterService filterService;
 
     @GetMapping("/employeeFilterEntity/{entity}/{criteria}/{toMeet}/{shelterName}")
-    public ResponseEntity<List<T>> employeeFilterEntity(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String entity, @PathVariable String criteria,
-                                                        @PathVariable String toMeet, @PathVariable String shelterName){
+    public ResponseEntity<List<PetDto>> employeeFilterEntity(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String entity, @PathVariable String criteria,
+                                                             @PathVariable String toMeet, @PathVariable String shelterName){
         try {
             System.out.println("header:"+ authorizationHeader);
             String token = extractToken(authorizationHeader);
             System.out.println(token);
-            return ResponseEntity.ok(filterService.filterEmployee(entity,criteria,toMeet,shelterName));
+            return ResponseEntity.status(HttpStatus.OK).body(filterService.filterEmployee(entity,criteria,toMeet,shelterName));
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
     }
     @GetMapping("/customerFilterEntity/{entity}/{criteria}/{toMeet}")
-    public ResponseEntity<List<T>> customerFilterEntity(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String entity, @PathVariable String criteria,
+    public ResponseEntity<List<PetDto>> customerFilterEntity(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String entity, @PathVariable String criteria,
                                 @PathVariable String toMeet){
         try {
             extractToken(authorizationHeader);
-            return ResponseEntity.ok(filterService.filterCustomer(entity,criteria,toMeet));
+            return ResponseEntity.status(HttpStatus.OK).body(filterService.filterCustomer(entity,criteria,toMeet));
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }

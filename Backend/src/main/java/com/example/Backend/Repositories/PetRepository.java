@@ -27,9 +27,13 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     //-----------------------------------------------------------------------------------------
 
     //age
-    List<Pet> findByAge(float age);
+//    List<Pet> findByAge(float age);
+    List<Pet> findByAgeBetween(float lowerBound, float upperBound);
 
-    List<Pet> findByAgeAndShelter_Name(float age, String shelterName);
+
+    //    List<Pet> findByAgeAndShelter_Name(float age, String shelterName);
+List<Pet> findByAgeBetweenAndShelter_Name(float lowerBound, float upperBound, String shelterName);
+
 
     //-------------------------------------------------------------------------------------------
     //shelter location
@@ -46,6 +50,7 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     //-------------------------------------------------------------------------------------------
 //    //id
 //    List<Pet> findById(long toMeet);
+//
 //
 //    List<Pet> findByIdAndShelter_Name(long toMeet, String shelterName);
 

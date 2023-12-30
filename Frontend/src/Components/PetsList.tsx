@@ -4,7 +4,14 @@ import { useNavigate } from "react-router-dom";
 import "./PetsList.css";
 import Pagination from "./Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faSort } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleCheck,
+  faFilter,
+  faSort,
+} from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import BobUpWindow from "./BobUpWindow";
+import GenericAlertModal from "./GenericAlertModal";
 
 interface Props {
   passedPets: PetDto[];
@@ -29,6 +36,9 @@ const PetsList = ({
 }: Props) => {
   const [pets, setPets] = useState<PetDto[]>([]);
 
+  // Application response
+  const [applicationResponse, setApplicationResponse] = useState("");
+
   // Pageination
   const [currentPage, setCurrentPage] = useState(1);
   const [petsPerPage, setPetsPerPage] = useState(10);
@@ -39,10 +49,13 @@ const PetsList = ({
   const [editedPet, setEditedPet] = useState<EditedPet>();
 
   // Sort and Filter
-  const [sortParams, setSortParams] = useState({ sortBy: "", sortOrder: true });
+  const [sortParams, setSortParams] = useState({
+    sortBy: "id",
+    sortOrder: true,
+  });
   const [filterParams, setFilterParams] = useState({
+    filterCriteria: "name",
     filterBy: "",
-    filterCriteria: "",
   });
 
   const [showSortModal, setShowSortModal] = useState(false);
@@ -62,21 +75,59 @@ const PetsList = ({
   const isMounted = useRef(true);
   const navigate = useNavigate();
 
-  const fetchData = async () => {
-    const petss = await getPets();
-    console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
-    setPets(petss);
-    console.log("Pets: ", pets);
-  };
+  // const fetchData = async () => {
+  //   const petss = await getPets();
+  //   console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
+  //   setPets(petss);
+  //   console.log("Pets: ", pets);
+  // };
 
   // Get the pets once the component is mounted
   useEffect(() => {
-    if (isMounted.current) {
-      if (passedPets.length > 0) setPets(passedPets);
-      else fetchData();
-      isMounted.current = false;
-    }
-  }, []);
+    const fetchData = async () => {
+      const petss = await getPets();
+      console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
+      setPets(petss);
+      console.log("Pets: ", pets);
+    };
+
+    const fetchSearchedData = async () => {
+      // Set wishlist status
+      for (let i = 0; i < passedPets.length; i++) {
+        const pet = passedPets[i];
+        // if (product.inWishlist) {
+        //   setWishlistStatus((prevStatus) =>
+        //     new Map(prevStatus).set(product.id, true)
+        //   );
+        // } else {
+        //   setWishlistStatus((prevStatus) =>
+        //     new Map(prevStatus).set(product.id, false)
+        //   );
+        // }
+      }
+
+      // Load images
+      const updatedProducts = await Promise.all(
+        passedPets.map(async (pet) => {
+          try {
+            pet.age = pet.age + 5;
+            pet.age = pet.age - 5;
+            return { ...pet, age: pet.age };
+          } catch (error) {
+            console.error("Error loading image:", error);
+            return pet; // Return original product if image loading fails
+          }
+        })
+      );
+
+      setPets(updatedProducts);
+    };
+
+    console.log(passedPets);
+    if (passedPets) {
+      fetchSearchedData();
+    } else fetchData();
+  }, [passedPets, getPets]);
 
   // Get current pets
   const indexOfLastPet = currentPage * petsPerPage;
@@ -93,28 +144,8 @@ const PetsList = ({
     }, 300);
   };
 
-  // TODO go to the PetDetails
   const handlePetClicked = (pet: PetDto) => {
     const id = pet.id;
-    console.log("RORUUUUUUUUUUUUUUUTTTTTTTTTTTTTTT")
-    console.log(
-      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ shelterName:",
-      shelterName
-    );
-    console.log(
-      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ userToken:",
-      userToken
-    );
-    console.log("🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ id:", id);
-    console.log("🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ role:", role);
-    console.log(
-      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ lastName:",
-      lastName
-    );
-    console.log(
-      "🚀 ~ file: PetsList.tsx:109 ~ handlePetClicked ~ firstName:",
-      firstName
-    );
     navigate("/petDetails", {
       state: {
         firstName: firstName,
@@ -127,73 +158,74 @@ const PetsList = ({
     });
   };
 
+  const getSortedPets = async (sortBy: any, sortOrder: any) => {
+    console.log("In get sorted products");
+    let url = "";
+    if (role === "adopter")
+      url = `http://localhost:9080/api/sort/customerSortEntity/pet/${sortBy}/${sortOrder}`;
+    else
+      url = `http://localhost:9080/api/sort/employeeSortEntity/pet/${sortBy}/${sortOrder}/${shelterName}`;
+
+    try {
+      console.log("sort url:", url);
+      const response = await axios(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log("sorted pets:" + response.data);
+      const pets: PetDto[] = response.data;
+      return pets;
+    } catch (error) {
+      console.log("Error:", error);
+      const pets: PetDto[] = [];
+      return pets;
+    }
+  };
+
   //TODO sorting
   const handleSortButtonClick = async () => {
     console.log(sortParams);
+    const pets = await getSortedPets(sortParams.sortBy, sortParams.sortOrder);
+    setPets(pets);
+  };
 
-    //     const products = await getSortedProducts(sortParams.sortBy, sortParams.sortOrder);
-    //     // Set wishlist status
-    //     for (let i = 0; i < products.length; i++) {
-    //       const product = products[i];
-    //       if (product.inWishlist) {
-    //         setWishlistStatus((prevStatus) =>
-    //           new Map(prevStatus).set(product.id, true)
-    //         );
-    //       } else {
-    //         setWishlistStatus((prevStatus) =>
-    //           new Map(prevStatus).set(product.id, false)
-    //         );
-    //       }
-
-    //     const updatedProducts = await Promise.all(
-    //       products.map(async (product) => {
-    //         try {
-    //           const dynamicImportedImage = await import(
-    //             `../assets${product.imageLink}`
-    //           );
-    //           return { ...product, imageLink: dynamicImportedImage.default };
-    //         } catch (error) {
-    //           console.error("Error loading image:", error);
-    //           return product; // Return original product if image loading fails
-    //         }
-    //       })
-    //     );
-    //     setProducts(updatedProducts);
-    //   };
+  const getFilterPets = async (criteria: any, toMeet: any) => {
+    // console.log ("key:  ", searchKey)
+    let url: string = "";
+    // let entity: string = "pet";
+    // let criteria: string = "search";
+    if (role === "adopter") {
+      url = `http://localhost:9080/api/filter/customerFilterEntity/pet/${criteria}/${toMeet}`;
+    } else {
+      url = `http://localhost:9080/api/filter/employeeFilterEntity/pet/${criteria}/${toMeet}/${shelterName}`;
+    }
+    try {
+      const response = await axios(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log(response.data);
+      const pets: PetDto[] = response.data;
+      return pets;
+    } catch (error) {
+      console.log("Error:", error);
+      const pets: PetDto[] = [];
+      return pets;
+    }
   };
 
   //TODO filtering
   const handleFilterButtonClick = async () => {
     console.log(filterParams);
-    //     const products = await getSortedProducts(sortParams.sortBy, sortParams.sortOrder);
-    //     // Set wishlist status
-    //     for (let i = 0; i < products.length; i++) {
-    //       const product = products[i];
-    //       if (product.inWishlist) {
-    //         setWishlistStatus((prevStatus) =>
-    //           new Map(prevStatus).set(product.id, true)
-    //         );
-    //       } else {
-    //         setWishlistStatus((prevStatus) =>
-    //           new Map(prevStatus).set(product.id, false)
-    //         );
-    //       }
-
-    //     const updatedProducts = await Promise.all(
-    //       products.map(async (product) => {
-    //         try {
-    //           const dynamicImportedImage = await import(
-    //             `../assets${product.imageLink}`
-    //           );
-    //           return { ...product, imageLink: dynamicImportedImage.default };
-    //         } catch (error) {
-    //           console.error("Error loading image:", error);
-    //           return product; // Return original product if image loading fails
-    //         }
-    //       })
-    //     );
-    //     setProducts(updatedProducts);
-    //   };
+    const pets = await getFilterPets(
+      filterParams.filterCriteria,
+      filterParams.filterBy
+    );
+    setPets(pets);
   };
 
   const toggleSortModal = () => {
@@ -231,12 +263,98 @@ const PetsList = ({
     setEditPet(false);
   };
 
-  const handleAppliyClicled = (pet: PetDto) => {
-    //TODO
+  const handleAppliyClicled = async (pet: PetDto) => {
+    try {
+      let application: ApplicationRequestDto = {
+        petID: pet.id,
+        shelterID: pet.shelter.id,
+      };
+      let url: string = `http://localhost:9080/api/application/create`;
+      const response = await axios.post(url, application, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      // Here means that the response is Ok and the product is added successfully
+      setApplicationResponse(response.data);
+    } catch (error) {
+      // Handle errors here
+      if (axios.isAxiosError(error)) {
+        // This type assertion tells TypeScript that error is an AxiosError
+        const axiosError = error as import("axios").AxiosError;
+        if (axiosError.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error("Response data:", axiosError.response.data);
+          console.error("Response status:", axiosError.response.status);
+          setApplicationResponse(axiosError.response.data as string);
+        } else if (axiosError.request) {
+          // The request was made but no response was received
+          console.error("No response received:", axiosError.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error("Error:", axiosError.message);
+        }
+      } else {
+        // Handle non-Axios errors
+        console.error("Non-Axios error:", error);
+      }
+    }
+  };
+
+  const formatAge = (age: number): string => {
+    const years = Math.floor(age);
+    const months = Math.floor((age - years) * 12);
+    if(years === 0) return `${months} months`
+    else return `${years} years ${months} months`;
+  };
+
+  const resetApplicationResponse = () => {
+    setApplicationResponse("");
   };
 
   return (
     <div>
+      {applicationResponse === "Application submitted Successfully" && (
+        <>
+          <GenericAlertModal
+            show={true}
+            onClose={resetApplicationResponse}
+            resetResponseData={resetApplicationResponse}
+            body={
+              <>
+                <p>
+                  <FontAwesomeIcon
+                    icon={faCircleCheck}
+                    style={{
+                      color: "green",
+                      fontSize: "18px",
+                      marginRight: "10px",
+                    }}
+                  />
+                  {applicationResponse}
+                </p>
+              </>
+            }
+          ></GenericAlertModal>
+        </>
+      )}
+      {applicationResponse !== "Application submitted Successfully" &&
+        applicationResponse !== "" && (
+          <>
+            <GenericAlertModal
+              show={true}
+              onClose={resetApplicationResponse}
+              resetResponseData={resetApplicationResponse}
+              body={
+                <>
+                  <p style={{ color: "red" }}>{applicationResponse}</p>
+                </>
+              }
+            ></GenericAlertModal>
+          </>
+        )}
       {editPet && (
         <>
           <AddEditPet
@@ -305,12 +423,12 @@ const PetsList = ({
                   <tr>
                     <td style={{ backgroundColor: "white" }}>Gender</td>
                     <td style={{ backgroundColor: "white" }}>
-                      {pet.male ? "Male" : "Felmale"}
+                      {pet.male ? "Male" : "Female"}
                     </td>
                   </tr>
                   <tr>
                     <td>Age</td>
-                    <td>{pet.age} years</td>
+                    <td>{formatAge(pet.age)}</td>
                   </tr>
                   <tr>
                     <td style={{ backgroundColor: "white" }}>Breed</td>
@@ -386,17 +504,21 @@ const PetsList = ({
                   }
                   value={sortParams.sortBy}
                 >
-                  <option value="">Select Criteria</option>
-                  <option value="productName">Name</option>
-                  <option value="price">Price</option>
-                  <option value="averageRating">Rating</option>
-                  <option value="numberOfReviews">Reviews</option>
-                  <option value="postedDate">Date Added</option>
-                  <option value="productCountAvailable">
-                    Remaining in Stock
-                  </option>
-                  <option value="productSoldCount">Sold Count</option>
-                  <option value="brand">Brand</option>
+                  {/* <option value="">Select Criteria</option> */}
+                  <option value="id">Pet ID</option>
+                  {role === "adopter" && (
+                    <option value="shelterId">Shelter ID</option>
+                  )}
+                  <option value="behaviour">Behaviour</option>
+                  <option value="breed">Breed</option>
+                  <option value="age">Age</option>
+                  <option value="description">Description</option>
+                  <option value="healthStatus">Health Status</option>
+                  <option value="isHouseTrained">is House Trained</option>
+                  <option value="isMale">Is Male</option>
+                  <option value="name">Name</option>
+                  <option value="species">Species</option>
+                  <option value="isSpayed">Is Spayed</option>
                 </select>
               </label>
             </div>
@@ -453,22 +575,28 @@ const PetsList = ({
                   onChange={(e) =>
                     setFilterParams((prev) => ({
                       ...prev,
-                      filterBy: e.target.value,
+                      filterCriteria: e.target.value,
                     }))
                   }
                   value={filterParams.filterCriteria}
                 >
-                  <option value="">Select Criteria</option>
-                  <option value="productName">Name</option>
-                  <option value="price">Price</option>
-                  <option value="averageRating">Rating</option>
-                  <option value="numberOfReviews">Reviews</option>
-                  <option value="postedDate">Date Added</option>
-                  <option value="productCountAvailable">
-                    Remaining in Stock
-                  </option>
-                  <option value="productSoldCount">Sold Count</option>
-                  <option value="brand">Brand</option>
+                  <option value="name">Name</option>
+                  {role === "adopter" && (
+                    <option value="shelterName">Shelter Name</option>
+                  )}
+                  {role === "adopter" && (
+                    <option value="shelterLocation">Shelter Location</option>
+                  )}
+                  <option value="behaviour">Behaviour</option>
+                  <option value="description">Description</option>
+                  <option value="healthStatus">Health Status</option>
+                  <option value="isHouseTrained">is House Trained</option>
+                  <option value="isMale">Is Male</option>
+                  <option value="isSpayed">Is Spayed</option>
+                  <option value="species">Species</option>
+                  <option value="breed">Breed</option>
+                  <option value="age">Age</option>
+                  <option value="vaccination">Vaccination</option>
                 </select>
               </label>
             </div>
@@ -482,11 +610,11 @@ const PetsList = ({
               <input
                 type="text"
                 name="filterCriteria"
-                value={filterParams.filterCriteria}
+                value={filterParams.filterBy}
                 onChange={(e) =>
                   setFilterParams((prev) => ({
                     ...prev,
-                    filterCriteria: e.target.value,
+                    filterBy: e.target.value,
                   }))
                 }
               />

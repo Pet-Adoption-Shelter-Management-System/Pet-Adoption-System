@@ -33,7 +33,8 @@ const Login = () => {
           userToken: response.data.token,
           from: "logged-in",
           shelterName: response.data.shelterName,
-          role: userLoginCredentials.role
+          role: userLoginCredentials.role,
+          pets:[]
         },
       });
     } catch (error) {

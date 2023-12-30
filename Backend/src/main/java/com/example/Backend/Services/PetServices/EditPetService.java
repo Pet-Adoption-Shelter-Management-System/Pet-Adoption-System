@@ -41,6 +41,7 @@ public class EditPetService extends AbstractPetService {
             Pet pet = petOptional.get();
             System.out.println(petDto.isAvailable());
             setPet(petDto, pet, optionalShelter.get());
+            pet.setAvailable(petDto.isAvailable());
             petVaccinationRepository.deleteByPet(pet);
             setVaccinations(petDto.getPetVaccinations(), pet);
             if (docs.length > 0 && !docs[0].isEmpty()) {
