@@ -1,7 +1,8 @@
 package com.example.Backend.Controllers;
 
-import com.example.Backend.DTO.ApplicationRequestDto;
 import com.example.Backend.DTO.AppManageDto;
+import com.example.Backend.DTO.ApplicationDto;
+import com.example.Backend.DTO.ApplicationRequestDto;
 import com.example.Backend.Middleware.Permissions;
 import com.example.Backend.Services.ApplicationService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/application")
@@ -24,7 +27,7 @@ public class ApplicationController {
     public ResponseEntity<String> createApp(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @RequestBody ApplicationRequestDto applicationRequestDto
-            ) {
+    ) {
         System.out.println(applicationRequestDto);
         if (permissions.checkToken(authorizationHeader)) {
             try {
@@ -63,5 +66,28 @@ public class ApplicationController {
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<List<ApplicationDto>> getApps(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+    ) {
+        if (permissions.checkToken(authorizationHeader)) {
+            try {
+                String token = permissions.extractToken(authorizationHeader);
+                if (permissions.checkAdopter(token)) {
+                    return ResponseEntity.status(HttpStatus.OK).body(appService.getApps(token));
+                }
+                if (permissions.checkStaff(token)) {
+                    return ResponseEntity.status(HttpStatus.OK).body(appService.getApps());
+                }
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            } catch (ResponseStatusException e) {
+                return ResponseEntity.status(e.getStatusCode()).build();
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

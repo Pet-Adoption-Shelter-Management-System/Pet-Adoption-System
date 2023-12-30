@@ -1,5 +1,6 @@
 package com.example.Backend.Model;
 
+import com.example.Backend.DTO.ApplicationDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,4 +37,13 @@ public class Application {
     @JoinColumn(name = "petID", nullable = false)
     private Pet pet;
 
+    public ApplicationDto toDto() {
+        return ApplicationDto.builder()
+                .id(id)
+                .adopterID(adopter.getId())
+                .petDto(pet.toDto())
+                .date(date)
+                .status(status)
+                .build();
+    }
 }
