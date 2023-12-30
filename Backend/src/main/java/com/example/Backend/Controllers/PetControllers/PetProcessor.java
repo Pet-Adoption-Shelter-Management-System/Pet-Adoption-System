@@ -2,6 +2,7 @@ package com.example.Backend.Controllers.PetControllers;
 
 import com.example.Backend.DTO.PetDto;
 import com.example.Backend.Middleware.Permissions;
+import com.example.Backend.Middleware.Utils;
 import com.example.Backend.Services.PetServices.IPetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -13,10 +14,12 @@ public class PetProcessor {
 
     private final Permissions permissions;
     private final IPetService petService;
+    private final Utils utils;
 
-    public PetProcessor(Permissions permissions, IPetService petService) {
+    public PetProcessor(Permissions permissions, IPetService petService, Utils utils) {
         this.permissions = permissions;
         this.petService = petService;
+        this.utils = utils;
     }
 
     public ResponseEntity<String> processPet(String jsonString, MultipartFile[] docs, String authorizationHeader) {
@@ -32,6 +35,10 @@ public class PetProcessor {
                 ObjectMapper map = new ObjectMapper();
                 map.registerModule(new JavaTimeModule());
                 PetDto petDto = map.readValue(jsonString, PetDto.class);
+                if (!permissions.checkManager(token) &&
+                        !petDto.getShelter().getName().equals(utils.getEmployee(token).getShelter().getName())) { // manager
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+                }
 
                 // add pet
                 petService.processPet(petDto, docs);

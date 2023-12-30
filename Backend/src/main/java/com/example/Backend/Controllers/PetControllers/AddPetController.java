@@ -1,6 +1,7 @@
 package com.example.Backend.Controllers.PetControllers;
 
 import com.example.Backend.Middleware.Permissions;
+import com.example.Backend.Middleware.Utils;
 import com.example.Backend.Services.PetServices.AddPetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,12 +18,14 @@ public class AddPetController {
     private AddPetService addPetService;
     @Autowired
     private Permissions permissions;
+    @Autowired
+    private Utils utils;
 
     @PostMapping
     public ResponseEntity<String> addPet(@RequestParam(value = "petDto") String jsonString,
                                          @RequestParam("docs") MultipartFile[] docs,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        PetProcessor petProcessor = new PetProcessor(permissions, addPetService);
+        PetProcessor petProcessor = new PetProcessor(permissions, addPetService, utils);
         return petProcessor.processPet(jsonString, docs, authorizationHeader);
     }
 }
