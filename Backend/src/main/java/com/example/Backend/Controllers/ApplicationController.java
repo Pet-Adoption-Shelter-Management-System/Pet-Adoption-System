@@ -28,6 +28,7 @@ public class ApplicationController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @RequestBody ApplicationRequestDto applicationRequestDto
     ) {
+          
         System.out.println(applicationRequestDto);
         if (permissions.checkToken(authorizationHeader)) {
             try {

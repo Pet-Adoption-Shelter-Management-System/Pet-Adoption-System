@@ -1,5 +1,6 @@
 package com.example.Backend.Controllers;
 
+import com.example.Backend.DTO.PetDto;
 import com.example.Backend.Services.Sort.SortService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,20 +16,33 @@ public class SortController <T extends Comparable<T>>{
     @Autowired
     SortService sortService;
 
-    @GetMapping("/employeeSortEntity/{entity}/{sortBy}/{order}/{shelterName}")
-    public ResponseEntity<List<T>> employeeSortEntity(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String entity, @PathVariable String sortBy, @PathVariable boolean order, @PathVariable String shelterName){
+    @GetMapping("/employeeSortEntity/{entity}/{sortBy}/{sortOrder}/{shelterName}")
+    public ResponseEntity<List<PetDto>> employeeSortEntity(@RequestHeader("Authorization") String authorizationHeader,
+                                                           @PathVariable String entity,
+                                                           @PathVariable String sortBy,
+                                                           @PathVariable boolean sortOrder,
+                                                           @PathVariable String shelterName){
         try {
+            System.out.println("sorting");
+            System.out.println(entity);
+            System.out.println(sortBy);
+            System.out.println(sortOrder);
+            System.out.println(shelterName);
             extractToken(authorizationHeader);
-            return ResponseEntity.ok(sortService.sortEmployee(entity, sortBy, order,shelterName));
+            return ResponseEntity.ok(sortService.sortEmployee(entity, sortBy, sortOrder,shelterName));
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
     }
-    @GetMapping("/customerSortEntity/{entity}/{sortBy}/{order}")
-    public ResponseEntity<List<T>> customerSortEntity(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String entity,@PathVariable String sortBy, @PathVariable boolean order){
+    @GetMapping("/customerSortEntity/{entity}/{sortBy}/{sortOrder}")
+    public ResponseEntity<List<PetDto>> customerSortEntity(@RequestHeader("Authorization") String authorizationHeader, @PathVariable String entity,@PathVariable String sortBy, @PathVariable boolean sortOrder){
         try {
+            System.out.println("sorting");
+            System.out.println(entity);
+            System.out.println(sortBy);
+            System.out.println(sortOrder);
             extractToken(authorizationHeader);
-            return ResponseEntity.ok(sortService.sortCustomer(entity, sortBy, order));
+            return ResponseEntity.ok(sortService.sortCustomer(entity, sortBy, sortOrder));
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }

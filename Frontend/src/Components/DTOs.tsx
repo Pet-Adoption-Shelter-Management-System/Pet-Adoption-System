@@ -90,7 +90,10 @@ interface ApplicationRequestDto {
   shelterID: number;
 }
 
-
+interface ApplicationRequestDto {
+  petID:number;
+  shelterID:number;
+}
 // interface Pet {
 //   petDto:PetDto;
 //   imageLink:string;

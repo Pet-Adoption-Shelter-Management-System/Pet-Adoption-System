@@ -1,5 +1,4 @@
 package com.example.Backend.Services;
-
 import com.example.Backend.DTO.ApplicationDto;
 import com.example.Backend.Middleware.Utils;
 import com.example.Backend.Model.Application;
@@ -28,6 +27,7 @@ public class ApplicationService {
     private final Utils utils;
     private final PetRepository petRepo;
     private final ShelterRepository shelterRepo;
+    private final Utils utils;
     private final ApplicationRepository applicationRepo;
     private final NotificationService notificationService;
 

@@ -39,7 +39,6 @@ public class AddPetService extends AbstractPetService {
             setPet(petDto, pet, optionalShelter.get());
             pet.setAvailable(true);
             pet = petRepository.save(pet);
-            pet = petRepository.save(pet);
             petVaccinationRepository.deleteByPet(pet);
             setVaccinations(petDto.getPetVaccinations(), pet);
             setDocs(documentService.saveDocs(docs, pet.getId()), pet);

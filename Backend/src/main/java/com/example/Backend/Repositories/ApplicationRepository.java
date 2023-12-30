@@ -14,4 +14,5 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     List<Application> findByAdopter_Id(long id);
 
     List<Application> findByShelter_Name(String shelterName);
+
 }
