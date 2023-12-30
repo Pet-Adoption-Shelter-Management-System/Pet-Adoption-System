@@ -2,7 +2,6 @@ package com.example.Backend.Services;
 
 import com.example.Backend.Model.Application;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -13,7 +12,6 @@ public class NotificationService {
     private final EmailService emailService;
     private final TemplateEngine templateEngine;
 
-    @Async
     public void notifyAdopter(Application application) {
         // Create a Thymeleaf context
         Context context = new Context();
@@ -29,6 +27,22 @@ public class NotificationService {
         context.setVariable("date", application.getDate());
         context.setVariable("status", application.getStatus());
         String body = templateEngine.process("notifyAdopter", context);
+        String to = application.getAdopter().getEmail();
+        String subject = "Application Status Update";
+        try {
+            emailService.sendEmail(to, subject, body);
+        } catch (Exception e) {
+            System.out.println("Error sending email");
+        }
+    }
+
+    public void notifyStatusUpdate(Application application) {
+        // Create a Thymeleaf context
+        Context context = new Context();
+        context.setVariable("name", application.getAdopter().getFirstName());
+        context.setVariable("appID", application.getId());
+        String template = application.getStatus().equals("Approved") ? "notifyApprove" : "notifyReject";
+        String body = templateEngine.process(template, context);
         String to = application.getAdopter().getEmail();
         String subject = "Application Status Update";
         try {
