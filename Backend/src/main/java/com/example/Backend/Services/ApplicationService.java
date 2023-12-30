@@ -27,7 +27,6 @@ public class ApplicationService {
     private final Utils utils;
     private final PetRepository petRepo;
     private final ShelterRepository shelterRepo;
-    private final Utils utils;
     private final ApplicationRepository applicationRepo;
     private final NotificationService notificationService;
 

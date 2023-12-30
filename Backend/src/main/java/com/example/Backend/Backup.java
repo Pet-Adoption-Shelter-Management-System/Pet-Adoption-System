@@ -1,7 +1,5 @@
 package com.example.Backend;
 
-import com.example.Backend.BackendApplication;
-
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +21,7 @@ public class Backup {
             /*NOTE: Creating Database Constraints*/
             String dbName = "petadoptiondb";
             String dbUser = "root";
-            String dbPass = "rootpass6789?#";
+            String dbPass = "MHD#2792#mhd";
 
             /*NOTE: Creating Path Constraints for folder saving*/
             /*NOTE: Here the backup folder is created for saving inside it*/
@@ -35,7 +33,7 @@ public class Backup {
 
             /*NOTE: Creating Path Constraints for backup saving*/
             /*NOTE: Here the backup is saved in a folder called backup with the name backup.sql*/
-            String savePath =  jarDir + "\\backup\\backup.sql";
+            String savePath = jarDir + "\\backup\\backup.sql";
 //            savePath = savePath.replaceAll("\\\\", "/");
 
             String mysqlDumpPath = "C:\\Program Files\\MySQL\\MySQL Server 8.1\\bin\\mysqldump";
