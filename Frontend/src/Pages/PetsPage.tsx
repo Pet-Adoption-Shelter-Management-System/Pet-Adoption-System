@@ -17,7 +17,7 @@ interface HomeRequest {
 
 const PetsPage = () => {
   const location = useLocation();
-  var { userToken, from, shelterName, role } = location.state || {};
+  var { userToken, from, shelterName, role, passedPets } = location.state || {};
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const isMounted = useRef<boolean>(true);
 
@@ -34,7 +34,7 @@ const PetsPage = () => {
         "🚀 ~ file: PetsPage.tsx:37 ~ fetchUserInfo ~ response:",
         response.data
       );
-      console.log(userToken)
+      console.log(userToken);
       setUserInfo(response.data);
     } catch (error) {
       console.error("Access denied !");
@@ -102,8 +102,10 @@ const PetsPage = () => {
     try {
       // TODO add the authorization header
       console.log("In get shelter pets");
-      console.log("🚀 ~ file: PetsPage.tsx:107 ~ getShelterPets ~ shelterName:", shelterName)
-      
+      console.log(
+        "🚀 ~ file: PetsPage.tsx:107 ~ getShelterPets ~ shelterName:",
+        shelterName
+      );
 
       let url: string = `http://localhost:9080/api/shelter/allPets?shelterName=${shelterName}`;
       const response = await axios.get(url, {
@@ -145,7 +147,6 @@ const PetsPage = () => {
     }
   };
 
-
   return (
     <>
       <Navbar
@@ -163,8 +164,8 @@ const PetsPage = () => {
         userToken={userToken}
         role={role}
         shelterName={role === "adopter" ? "Pets Adoption" : shelterName}
-        getPets={ role === "adopter" ? getPets : getShelterPets} //TODO chnage it according to the role
-        passedPets={[]} // TODO
+        getPets={role === "adopter" ? getPets : getShelterPets}
+        passedPets={passedPets}
       />
     </>
   );

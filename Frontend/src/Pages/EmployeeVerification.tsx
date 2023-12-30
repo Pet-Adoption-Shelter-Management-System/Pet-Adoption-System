@@ -23,13 +23,14 @@ const EmployeeVerification = () => {
           "Content-Type": "application/json",
         },
       });
-    
+
       alert("Verified successfully");
       navigate("/PetsPage", {
         state: {
           userToken: userTok,
           shelterName: response.data.shelterName,
           role: response.data.role,
+          pets: []
         },
       });
     } catch (error) {
@@ -58,7 +59,12 @@ const EmployeeVerification = () => {
 
   return (
     <>
-      <Form isLogin={false} getStaffSignUpCredentials={getAdminSignUpCredentials} staffEmail={email}  isEmployeeSignup={true}/>
+      <Form
+        isLogin={false}
+        getStaffSignUpCredentials={getAdminSignUpCredentials}
+        staffEmail={email}
+        isEmployeeSignup={true}
+      />
     </>
   );
 };

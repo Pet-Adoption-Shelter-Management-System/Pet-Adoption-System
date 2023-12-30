@@ -17,6 +17,12 @@ public class FilterPet<T extends Comparable<T>> {
 
     public List<Pet> meetCriteriaEmployee(String criteria, String toMeet, String shelterName) {
         try {
+            float lowerBound = 0, upperBound = 0;
+            if(criteria.equals("age")){
+                float age = Float.parseFloat(toMeet);
+                lowerBound = age - 0.001f; // Adjust the tolerance as needed
+                upperBound = age + 0.001f;
+            }
             return switch (criteria) {
 //                case "id" -> petRepository.findByIdAndShelter_Name(Long.parseLong(toMeet),shelterName);
                 case "name" -> petRepository.findByNameAndShelter_Name(toMeet, shelterName);
@@ -31,7 +37,7 @@ public class FilterPet<T extends Comparable<T>> {
                 case "shelterId" -> petRepository.findByShelter_IdAndShelter_Name(Long.parseLong(toMeet), shelterName);
                 case "species" -> petRepository.findBySpeciesAndShelter_Name(toMeet, shelterName);
                 case "breed" -> petRepository.findByBreedAndShelter_Name(toMeet, shelterName);
-                case "age" -> petRepository.findByAgeAndShelter_Name(Float.parseFloat(toMeet), shelterName);
+                case "age" -> petRepository.findByAgeBetweenAndShelter_Name(lowerBound, upperBound, shelterName);
                 case "shelterLocation" -> petRepository.findByShelterLocationAndShelter_Name(toMeet, shelterName);
                 case "vaccination" ->
                         petRepository.findByPetVaccinations_VaccinationAndShelter_Name(toMeet, shelterName);
@@ -46,8 +52,17 @@ public class FilterPet<T extends Comparable<T>> {
 
     public List<Pet> meetCriteriaCustomer(String criteria, String toMeet) {
         try {
+            System.out.println(toMeet);
+            float lowerBound = 0, upperBound = 0;
+            if(criteria.equals("age")){
+                float age = Float.parseFloat(toMeet);
+                lowerBound = age - 0.001f; // Adjust the tolerance as needed
+                upperBound = age + 0.001f;
+            }
+
             return switch (criteria) {
 //                case "id" -> petRepository.findById(Long.parseLong(toMeet));
+
                 case "name" -> petRepository.findByName(toMeet);
                 case "behaviour" -> petRepository.findByBehaviour(toMeet);
                 case "description" -> petRepository.findByDescription(toMeet);
@@ -58,7 +73,7 @@ public class FilterPet<T extends Comparable<T>> {
                 case "shelterId" -> petRepository.findByShelter_Id(Long.parseLong(toMeet));
                 case "species" -> petRepository.findBySpecies(toMeet);
                 case "breed" -> petRepository.findByBreed(toMeet);
-                case "age" -> petRepository.findByAge(Float.parseFloat(toMeet));
+                case "age" -> petRepository.findByAgeBetween(lowerBound, upperBound);
                 case "shelterLocation" -> petRepository.findByShelterLocation(toMeet);
                 case "vaccination" -> petRepository.findByPetVaccinations_Vaccination(toMeet);
                 case "shelterName" -> petRepository.findByShelter_Name(toMeet);

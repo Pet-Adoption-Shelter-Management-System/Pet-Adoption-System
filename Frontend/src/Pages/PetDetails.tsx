@@ -105,6 +105,13 @@ const PetDetails = () => {
     processPet();
   }, [pet]); // pet is a dependency for this useEffect
 
+  const formatAge = (age: number): string => {
+    const years = Math.floor(age);
+    const months = Math.floor((age - years) * 12);
+    if(years === 0) return `${months} months`
+    else return `${years} years ${months} months`;
+  };
+
   return (
     <>
       <Navbar
@@ -209,9 +216,7 @@ const PetDetails = () => {
                     <td style={{ backgroundColor: "white" }}>Age</td>
                     <td style={{ backgroundColor: "white" }}>
                       {" "}
-                      {pet.age > 1
-                        ? `${pet.age} Years`
-                        : `${pet.age * 12} Months`}
+                      {formatAge(pet.age)}
                     </td>
                   </tr>
                   <tr>

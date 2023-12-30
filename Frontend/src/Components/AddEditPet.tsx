@@ -659,30 +659,33 @@ const AddEditPet = ({
                   House trained
                 </label>
               </div>
-
-              <div
-                className="productFormField"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  checked={formData.available === "true"}
-                  id="checkbox3"
-                  style={{ margin: "0px" }}
-                  onChange={handleAvailableChnage}
-                />
-                <label
-                  className="form-check-label form-label"
-                  style={{ marginLeft: "10px" }}
-                >
-                  Available
-                </label>
-              </div>
+              {isEdit && (
+                <>
+                  <div
+                    className="productFormField"
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={formData.available === "true"}
+                      id="checkbox3"
+                      style={{ margin: "0px" }}
+                      onChange={handleAvailableChnage}
+                    />
+                    <label
+                      className="form-check-label form-label"
+                      style={{ marginLeft: "10px" }}
+                    >
+                      Available
+                    </label>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="productFormField" style={{ marginLeft: "8px" }}>
