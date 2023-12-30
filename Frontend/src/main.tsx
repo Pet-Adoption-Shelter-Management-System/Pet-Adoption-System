@@ -17,6 +17,7 @@ import EmployeeVerification from "./Pages/EmployeeVerification.tsx";
 import ShelterInfo from "./Pages/ShelterInfo.tsx";
 import StaffInfo from "./Pages/StaffInfo.tsx";
 import ProfilePage from "./Pages/ProfilePage.tsx";
+import ApplicationsList from "./Pages/ApplicationsList.tsx";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/createShelter",
     element:<CreateShelter/>
+  },
+  {
+    path: "/applications",
+    element:<ApplicationsList/>
   },
   {
     path: "/verification",

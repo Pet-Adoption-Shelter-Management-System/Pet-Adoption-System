@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 public class ApplicationDto {
     private long id;
     private long adopterID;
-    private long shelterID;
-    private long petID;
+    private PetDto petDto;
     private LocalDateTime date;
     private String status;
 }
