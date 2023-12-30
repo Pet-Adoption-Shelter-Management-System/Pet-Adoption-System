@@ -70,8 +70,18 @@ interface PetDto {
 interface ApplicationDto {
   id: number;
   adopterID: number;
+  firstName:string;
+  lastName:string;
+  email:string;
+  contactPhone:string;
+  address:string;
   petDto: PetDto;
   date: string; 
+  status: string;
+}
+
+interface AppManageDto {
+  appId: number;
   status: string;
 }
 
