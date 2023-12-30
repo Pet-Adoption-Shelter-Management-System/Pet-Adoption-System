@@ -70,16 +70,17 @@ public class ApplicationController {
 
     @GetMapping("/get")
     public ResponseEntity<List<ApplicationDto>> getApps(
+            @RequestParam(required = false) String shelterName,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
     ) {
         if (permissions.checkToken(authorizationHeader)) {
             try {
                 String token = permissions.extractToken(authorizationHeader);
                 if (permissions.checkAdopter(token)) {
-                    return ResponseEntity.status(HttpStatus.OK).body(appService.getApps(token));
+                    return ResponseEntity.status(HttpStatus.OK).body(appService.getAppsByToken(token));
                 }
                 if (permissions.checkStaff(token)) {
-                    return ResponseEntity.status(HttpStatus.OK).body(appService.getApps());
+                    return ResponseEntity.status(HttpStatus.OK).body(appService.getAppsByShelter(shelterName));
                 }
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             } catch (ResponseStatusException e) {
