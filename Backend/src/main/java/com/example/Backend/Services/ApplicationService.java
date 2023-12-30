@@ -86,13 +86,13 @@ public class ApplicationService {
         CompletableFuture.runAsync(() -> notificationService.notifyStatusUpdate(application));
     }
 
-    public List<ApplicationDto> getApps(String token) {
+    public List<ApplicationDto> getAppsByToken(String token) {
         List<Application> applications = applicationRepo.findByAdopter_Id(utils.getAdopter(token).getId());
         return applications.stream().map(Application::toDto).collect(Collectors.toList());
     }
 
-    public List<ApplicationDto> getApps() {
-        List<Application> applications = applicationRepo.findAll();
+    public List<ApplicationDto> getAppsByShelter(String shelterName) {
+        List<Application> applications = applicationRepo.findByShelter_Name(shelterName);
         return applications.stream().map(Application::toDto).collect(Collectors.toList());
     }
 }
