@@ -123,8 +123,8 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleApplicationClick = () => {
-    role !== "staff"
-      ? navigate("/applications", {
+    role !== "adopter" 
+      ? navigate("/dashboard", {
           state: {
             shelterName: shelterName,
             firstName: firstName,
@@ -133,7 +133,7 @@ const Navbar: React.FC<NavbarProps> = ({
             role: role,
           },
         })
-      : navigate("/adopterApplication", {
+      : navigate("/applications", {
           state: {
             shelterName: shelterName,
             firstName: firstName,

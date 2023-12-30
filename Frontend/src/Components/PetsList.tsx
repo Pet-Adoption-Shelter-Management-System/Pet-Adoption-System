@@ -21,8 +21,6 @@ interface Props {
   userToken: string;
   shelterName: string;
   getPets: () => Promise<PetDto[]>;
-  //   getSortedProducts: (sortBy: any, sortOrder: any) => Promise<Pet[]>;
-  //   getFilteredProducts: (filter: FilterProductDto) => Promise<Product[]>;
 }
 
 const PetsList = ({
@@ -60,27 +58,9 @@ const PetsList = ({
 
   const [showSortModal, setShowSortModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  // const [filter, setFilter] = useState<FilterProductDto>({ //TODO
-  //   productName: '',
-  //   fromPrice: 0,
-  //   toPrice: 20000,
-  //   description: '',
-  //   available: false,
-  //   brand: '',
-  //   fromDiscountPercentage: 0,
-  //   toDiscountPercentage: 100,
-  //   category: ''
-  // });
 
   const isMounted = useRef(true);
   const navigate = useNavigate();
-
-  // const fetchData = async () => {
-  //   const petss = await getPets();
-  //   console.log("🚀 ~ file: PetsList.tsx:60 ~ fetchData ~ petss:", petss);
-  //   setPets(petss);
-  //   console.log("Pets: ", pets);
-  // };
 
   // Get the pets once the component is mounted
   useEffect(() => {
@@ -95,15 +75,6 @@ const PetsList = ({
       // Set wishlist status
       for (let i = 0; i < passedPets.length; i++) {
         const pet = passedPets[i];
-        // if (product.inWishlist) {
-        //   setWishlistStatus((prevStatus) =>
-        //     new Map(prevStatus).set(product.id, true)
-        //   );
-        // } else {
-        //   setWishlistStatus((prevStatus) =>
-        //     new Map(prevStatus).set(product.id, false)
-        //   );
-        // }
       }
 
       // Load images
@@ -303,12 +274,14 @@ const PetsList = ({
     }
   };
 
+
   const formatAge = (age: number): string => {
     const years = Math.floor(age);
     const months = Math.floor((age - years) * 12);
     if(years === 0) return `${months} months`
     else return `${years} years ${months} months`;
   };
+
 
   const resetApplicationResponse = () => {
     setApplicationResponse("");

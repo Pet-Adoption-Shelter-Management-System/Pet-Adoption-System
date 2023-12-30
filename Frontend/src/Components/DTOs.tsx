@@ -49,7 +49,6 @@ interface ShelterDto {
   contactEmail: string;
 }
 
-
 interface PetDto {
   id: number;
   name: string;
@@ -62,12 +61,34 @@ interface PetDto {
   breed: string;
   species: string;
   spayed: boolean;
-  available:boolean;
-  shelter:ShelterDto;
+  available: boolean;
+  shelter: ShelterDto;
   petVaccinations: string[];
-  docs:DocumentDto[]
+  docs: DocumentDto[];
 }
 
+interface ApplicationDto {
+  id: number;
+  adopterID: number;
+  firstName:string;
+  lastName:string;
+  email:string;
+  contactPhone:string;
+  address:string;
+  petDto: PetDto;
+  date: string; 
+  status: string;
+}
+
+interface AppManageDto {
+  appId: number;
+  status: string;
+}
+
+interface ApplicationRequestDto {
+  petID: number;
+  shelterID: number;
+}
 
 interface ApplicationRequestDto {
   petID:number;
