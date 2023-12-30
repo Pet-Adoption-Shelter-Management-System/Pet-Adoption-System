@@ -55,7 +55,7 @@ public class ApplicationController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
                 }
                 appService.manageApp(appManageDto.getAppId(), appManageDto.getStatus());
-                return ResponseEntity.status(HttpStatus.OK).body("Application managed Successfully");
+                return ResponseEntity.status(HttpStatus.OK).body("Status updated");
             } catch (ResponseStatusException e) {
                 return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
             } catch (Exception e) {
